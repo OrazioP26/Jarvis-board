@@ -1,0 +1,24 @@
+{
+  "tasks": [
+    {
+      "id": "seed-1",
+      "title": "Welcome to novl-dashboard",
+      "description": "Drag me between columns. Edit me. Assign me.",
+      "status": "todo",
+      "assignee": "Unassigned",
+      "order": 0,
+      "createdAt": "2026-02-01T00:00:00.000Z",
+      "updatedAt": "2026-02-01T00:00:00.000Z"
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "seed-d1",
+      "name": "Project README",
+      "link": "./README.md",
+      "notes": "Where the setup + roadmap live",
+      "createdAt": "2026-02-01T00:00:00.000Z",
+      "updatedAt": "2026-02-01T00:00:00.000Z"
+    }
+  ]
+}

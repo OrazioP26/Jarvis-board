@@ -1,0 +1,8 @@
+node_modules
+.next
+out
+.DS_Store
+.env*
+.vercel
+# if you later store local-only data
+# data/db.local.json
