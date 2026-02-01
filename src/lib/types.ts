@@ -22,6 +22,22 @@ export interface Deliverable {
   updatedAt: string;
 }
 
+export type ActivityKind =
+  | 'task.created'
+  | 'task.updated'
+  | 'task.deleted'
+  | 'deliverable.created'
+  | 'deliverable.updated'
+  | 'deliverable.deleted'
+  | 'system.heartbeat';
+
+export interface ActivityEvent {
+  id: string;
+  kind: ActivityKind;
+  message: string;
+  createdAt: string;
+}
+
 export const STATUSES: Array<{ key: Status; label: string }> = [
   { key: 'todo', label: 'Todo' },
   { key: 'in_progress', label: 'In Progress' },
