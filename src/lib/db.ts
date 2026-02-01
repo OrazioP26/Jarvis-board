@@ -2,16 +2,20 @@ import path from 'path';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
 import { createClient } from '@vercel/kv';
-import type { Deliverable, Task } from './types';
+import type { ActivityEvent, Deliverable, Task } from './types';
 
 export type DBData = {
   tasks: Task[];
   deliverables: Deliverable[];
+  activity: ActivityEvent[];
+  lastActivityAt: string | null;
 };
 
 const defaultData: DBData = {
   tasks: [],
   deliverables: [],
+  activity: [],
+  lastActivityAt: null,
 };
 
 const KV_KEY = 'jarvis_board:v1';
@@ -63,23 +67,33 @@ async function getLowDB() {
   return lowDbPromise;
 }
 
+function normalizeData(data: DBData | null | undefined): DBData {
+  const d: any = data ?? {};
+  return {
+    tasks: Array.isArray(d.tasks) ? d.tasks : [],
+    deliverables: Array.isArray(d.deliverables) ? d.deliverables : [],
+    activity: Array.isArray(d.activity) ? d.activity : [],
+    lastActivityAt: typeof d.lastActivityAt === 'string' ? d.lastActivityAt : null,
+  };
+}
+
 export async function readData(): Promise<DBData> {
   // Prefer KV in prod; lowdb is only for local dev.
   if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
     const client = getKV();
     const data = await client.get<DBData>(KV_KEY);
-    return data ?? defaultData;
+    return normalizeData(data);
   }
 
   const cfg = getKvConfig();
   if (cfg) {
     const client = getKV();
     const data = await client.get<DBData>(KV_KEY);
-    return data ?? defaultData;
+    return normalizeData(data);
   }
 
   const db = await getLowDB();
-  return db.data ?? defaultData;
+  return normalizeData((db.data as any) ?? null);
 }
 
 export async function writeData(data: DBData): Promise<void> {

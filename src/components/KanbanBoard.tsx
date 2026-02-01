@@ -20,6 +20,7 @@ import type { Status, Task } from '@/lib/types';
 import { STATUSES } from '@/lib/types';
 import { TaskCard } from '@/components/TaskCard';
 import { TaskModal } from '@/components/TaskModal';
+import { AgentStatus } from '@/components/AgentStatus';
 import { Button } from '@/components/ui/Button';
 
 function groupByStatus(tasks: Task[]) {
@@ -197,10 +198,14 @@ export function KanbanBoard() {
 
   return (
     <div>
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h1 className="text-xl font-semibold text-zinc-900">novl-dashboard</h1>
-          <p className="text-sm text-zinc-500">Tasks for Orazio + Jarvis</p>
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-xl font-semibold text-zinc-900">Jarvis-board</h1>
+          <div className="flex items-center gap-3">
+            <p className="text-sm text-zinc-500">Tasks for Orazio + Jarvis</p>
+            <span className="text-zinc-300">•</span>
+            <AgentStatus />
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="secondary" onClick={refresh}>

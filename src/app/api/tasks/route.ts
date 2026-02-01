@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
 import { nowISO, updateData } from '@/lib/db';
+import { recordActivity } from '@/lib/activity';
 import type { Status, Task } from '@/lib/types';
 
 const CreateTaskSchema = z.object({
@@ -55,6 +56,7 @@ export async function POST(req: Request) {
     };
 
     data.tasks.push(newTask);
+    recordActivity(data, 'task.created', `Created task: ${newTask.title}`);
     return newTask;
   });
 

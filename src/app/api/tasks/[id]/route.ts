@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { nowISO, updateData } from '@/lib/db';
+import { recordActivity } from '@/lib/activity';
 
 const UpdateTaskSchema = z
   .object({
@@ -54,6 +55,8 @@ export async function PATCH(
     reorderWithinStatus(data.tasks, beforeStatus);
     reorderWithinStatus(data.tasks, task.status);
 
+    recordActivity(data, 'task.updated', `Updated task: ${task.title}`);
+
     return task;
   });
 
@@ -78,6 +81,8 @@ export async function DELETE(
       .filter((t) => t.status === status)
       .sort((a, b) => a.order - b.order)
       .forEach((t, i) => (t.order = i));
+
+    recordActivity(data, 'task.deleted', `Deleted task: ${removed.title}`);
 
     return true;
   });
