@@ -1,7 +1,7 @@
 import path from 'path';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
-import { kv } from '@vercel/kv';
+import { createClient } from '@vercel/kv';
 import type { Deliverable, Task } from './types';
 
 export type DBData = {
@@ -16,13 +16,35 @@ const defaultData: DBData = {
 
 const KV_KEY = 'jarvis_board:v1';
 
-function hasKV() {
-  // Vercel/Upstash expose these env vars. If they aren't present, fall back to local lowdb.
-  return Boolean(
-    process.env.KV_REST_API_URL &&
-      process.env.KV_REST_API_TOKEN &&
-      process.env.KV_REST_API_READ_ONLY_TOKEN
-  );
+function getKvConfig(): { url: string; token: string } | null {
+  // Newer Vercel integrations often expose Upstash env vars instead of KV_*.
+  const url =
+    process.env.KV_REST_API_URL ||
+    process.env.UPSTASH_REDIS_REST_URL ||
+    process.env.UPSTASH_REDIS_REST_URL?.toString();
+
+  const token =
+    process.env.KV_REST_API_TOKEN ||
+    process.env.UPSTASH_REDIS_REST_TOKEN ||
+    process.env.UPSTASH_REDIS_REST_TOKEN?.toString();
+
+  if (!url || !token) return null;
+  return { url, token };
+}
+
+let kvClient: ReturnType<typeof createClient> | null = null;
+function getKV(): ReturnType<typeof createClient> {
+  if (kvClient) return kvClient;
+
+  const cfg = getKvConfig();
+  if (!cfg) {
+    throw new Error(
+      'No KV/Upstash Redis env vars configured. Add an Upstash Redis integration in Vercel (or set KV_REST_API_URL + KV_REST_API_TOKEN).'
+    );
+  }
+
+  kvClient = createClient({ url: cfg.url, token: cfg.token });
+  return kvClient;
 }
 
 let lowDbPromise: Promise<Low<DBData>> | null = null;
@@ -42,8 +64,17 @@ async function getLowDB() {
 }
 
 export async function readData(): Promise<DBData> {
-  if (hasKV()) {
-    const data = await kv.get<DBData>(KV_KEY);
+  // Prefer KV in prod; lowdb is only for local dev.
+  if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+    const client = getKV();
+    const data = await client.get<DBData>(KV_KEY);
+    return data ?? defaultData;
+  }
+
+  const cfg = getKvConfig();
+  if (cfg) {
+    const client = getKV();
+    const data = await client.get<DBData>(KV_KEY);
     return data ?? defaultData;
   }
 
@@ -52,8 +83,16 @@ export async function readData(): Promise<DBData> {
 }
 
 export async function writeData(data: DBData): Promise<void> {
-  if (hasKV()) {
-    await kv.set(KV_KEY, data);
+  if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+    const client = getKV();
+    await client.set(KV_KEY, data);
+    return;
+  }
+
+  const cfg = getKvConfig();
+  if (cfg) {
+    const client = getKV();
+    await client.set(KV_KEY, data);
     return;
   }
 
