@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
-import { getDB, nowISO } from '@/lib/db';
+import { nowISO, updateData } from '@/lib/db';
 import type { Deliverable } from '@/lib/types';
 
 const CreateDeliverableSchema = z.object({
@@ -11,10 +11,11 @@ const CreateDeliverableSchema = z.object({
 });
 
 export async function GET() {
-  const db = await getDB();
-  const deliverables = (db.data?.deliverables ?? [])
-    .slice()
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const deliverables = await updateData((data) => {
+    return (data.deliverables ?? [])
+      .slice()
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  });
   return NextResponse.json({ deliverables });
 }
 
@@ -28,20 +29,21 @@ export async function POST(req: Request) {
     );
   }
 
-  const db = await getDB();
   const now = nowISO();
 
-  const deliverable: Deliverable = {
-    id: nanoid(),
-    name: parsed.data.name,
-    link: parsed.data.link || undefined,
-    notes: parsed.data.notes || undefined,
-    createdAt: now,
-    updatedAt: now,
-  };
+  const deliverable = await updateData((data) => {
+    const deliverable: Deliverable = {
+      id: nanoid(),
+      name: parsed.data.name,
+      link: parsed.data.link || undefined,
+      notes: parsed.data.notes || undefined,
+      createdAt: now,
+      updatedAt: now,
+    };
 
-  db.data!.deliverables.push(deliverable);
-  await db.write();
+    data.deliverables.push(deliverable);
+    return deliverable;
+  });
 
   return NextResponse.json({ deliverable }, { status: 201 });
 }

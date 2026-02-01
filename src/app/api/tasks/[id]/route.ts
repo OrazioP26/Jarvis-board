@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { getDB, nowISO } from '@/lib/db';
+import { nowISO, updateData } from '@/lib/db';
 
 const UpdateTaskSchema = z
   .object({
@@ -33,28 +33,31 @@ export async function PATCH(
     );
   }
 
-  const db = await getDB();
-  const task = db.data!.tasks.find((t) => t.id === id);
+  const task = await updateData((data) => {
+    const task = data.tasks.find((t) => t.id === id);
+    if (!task) return null;
+
+    const beforeStatus = task.status;
+
+    if (parsed.data.title !== undefined) task.title = parsed.data.title;
+    if (parsed.data.description !== undefined)
+      task.description = parsed.data.description || undefined;
+    if (parsed.data.assignee !== undefined) task.assignee = parsed.data.assignee;
+    if (parsed.data.status !== undefined) task.status = parsed.data.status;
+
+    // If order explicitly provided, set it and later normalize.
+    if (parsed.data.order !== undefined) task.order = parsed.data.order;
+
+    task.updatedAt = nowISO();
+
+    // Normalize orders in affected columns
+    reorderWithinStatus(data.tasks, beforeStatus);
+    reorderWithinStatus(data.tasks, task.status);
+
+    return task;
+  });
+
   if (!task) return NextResponse.json({ error: 'Not found' }, { status: 404 });
-
-  const beforeStatus = task.status;
-
-  if (parsed.data.title !== undefined) task.title = parsed.data.title;
-  if (parsed.data.description !== undefined)
-    task.description = parsed.data.description || undefined;
-  if (parsed.data.assignee !== undefined) task.assignee = parsed.data.assignee;
-  if (parsed.data.status !== undefined) task.status = parsed.data.status;
-
-  // If order explicitly provided, set it and later normalize.
-  if (parsed.data.order !== undefined) task.order = parsed.data.order;
-
-  task.updatedAt = nowISO();
-
-  // Normalize orders in affected columns
-  reorderWithinStatus(db.data!.tasks, beforeStatus);
-  reorderWithinStatus(db.data!.tasks, task.status);
-
-  await db.write();
   return NextResponse.json({ task });
 }
 
@@ -63,18 +66,22 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const db = await getDB();
-  const idx = db.data!.tasks.findIndex((t) => t.id === id);
-  if (idx === -1) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-  const [removed] = db.data!.tasks.splice(idx, 1);
-  // Normalize column ordering after delete
-  const status = removed.status;
-  db.data!.tasks
-    .filter((t) => t.status === status)
-    .sort((a, b) => a.order - b.order)
-    .forEach((t, i) => (t.order = i));
+  const ok = await updateData((data) => {
+    const idx = data.tasks.findIndex((t) => t.id === id);
+    if (idx === -1) return false;
 
-  await db.write();
+    const [removed] = data.tasks.splice(idx, 1);
+    // Normalize column ordering after delete
+    const status = removed.status;
+    data.tasks
+      .filter((t) => t.status === status)
+      .sort((a, b) => a.order - b.order)
+      .forEach((t, i) => (t.order = i));
+
+    return true;
+  });
+
+  if (!ok) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json({ ok: true });
 }

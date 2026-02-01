@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
-import { getDB, nowISO } from '@/lib/db';
+import { nowISO, updateData } from '@/lib/db';
 import type { Status, Task } from '@/lib/types';
 
 const CreateTaskSchema = z.object({
@@ -12,11 +12,13 @@ const CreateTaskSchema = z.object({
 });
 
 export async function GET() {
-  const db = await getDB();
-  const tasks = (db.data?.tasks ?? []).slice().sort((a, b) => {
-    if (a.status !== b.status) return a.status.localeCompare(b.status);
-    return a.order - b.order;
+  const tasks = await updateData((data) => {
+    return (data.tasks ?? []).slice().sort((a, b) => {
+      if (a.status !== b.status) return a.status.localeCompare(b.status);
+      return a.order - b.order;
+    });
   });
+
   return NextResponse.json({ tasks });
 }
 
@@ -30,30 +32,31 @@ export async function POST(req: Request) {
     );
   }
 
-  const db = await getDB();
   const { title, description, status, assignee } = parsed.data;
   const now = nowISO();
 
-  const maxOrder = Math.max(
-    -1,
-    ...(db.data!.tasks
-      .filter((t) => t.status === status)
-      .map((t) => t.order))
-  );
+  const task = await updateData((data) => {
+    const maxOrder = Math.max(
+      -1,
+      ...(data.tasks
+        .filter((t) => t.status === status)
+        .map((t) => t.order))
+    );
 
-  const task: Task = {
-    id: nanoid(),
-    title,
-    description: description || undefined,
-    status: status as Status,
-    assignee,
-    order: maxOrder + 1,
-    createdAt: now,
-    updatedAt: now,
-  };
+    const newTask: Task = {
+      id: nanoid(),
+      title,
+      description: description || undefined,
+      status: status as Status,
+      assignee,
+      order: maxOrder + 1,
+      createdAt: now,
+      updatedAt: now,
+    };
 
-  db.data!.tasks.push(task);
-  await db.write();
+    data.tasks.push(newTask);
+    return newTask;
+  });
 
   return NextResponse.json({ task }, { status: 201 });
 }
