@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { getDB, nowISO } from '@/lib/db';
+import { nowISO, updateData } from '@/lib/db';
 
 const UpdateDeliverableSchema = z
   .object({
@@ -24,17 +24,20 @@ export async function PATCH(
     );
   }
 
-  const db = await getDB();
-  const item = db.data!.deliverables.find((d) => d.id === id);
-  if (!item) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  const deliverable = await updateData((data) => {
+    const item = data.deliverables.find((d) => d.id === id);
+    if (!item) return null;
 
-  if (parsed.data.name !== undefined) item.name = parsed.data.name;
-  if (parsed.data.link !== undefined) item.link = parsed.data.link || undefined;
-  if (parsed.data.notes !== undefined) item.notes = parsed.data.notes || undefined;
-  item.updatedAt = nowISO();
+    if (parsed.data.name !== undefined) item.name = parsed.data.name;
+    if (parsed.data.link !== undefined) item.link = parsed.data.link || undefined;
+    if (parsed.data.notes !== undefined) item.notes = parsed.data.notes || undefined;
+    item.updatedAt = nowISO();
 
-  await db.write();
-  return NextResponse.json({ deliverable: item });
+    return item;
+  });
+
+  if (!deliverable) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+  return NextResponse.json({ deliverable });
 }
 
 export async function DELETE(
@@ -42,11 +45,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const db = await getDB();
-  const idx = db.data!.deliverables.findIndex((d) => d.id === id);
-  if (idx === -1) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
-  db.data!.deliverables.splice(idx, 1);
-  await db.write();
+  const ok = await updateData((data) => {
+    const idx = data.deliverables.findIndex((d) => d.id === id);
+    if (idx === -1) return false;
+
+    data.deliverables.splice(idx, 1);
+    return true;
+  });
+
+  if (!ok) return NextResponse.json({ error: 'Not found' }, { status: 404 });
   return NextResponse.json({ ok: true });
 }

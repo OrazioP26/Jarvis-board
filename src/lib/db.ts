@@ -1,6 +1,7 @@
 import path from 'path';
 import { Low } from 'lowdb';
 import { JSONFile } from 'lowdb/node';
+import { kv } from '@vercel/kv';
 import type { Deliverable, Task } from './types';
 
 export type DBData = {
@@ -13,21 +14,60 @@ const defaultData: DBData = {
   deliverables: [],
 };
 
-let dbPromise: Promise<Low<DBData>> | null = null;
+const KV_KEY = 'jarvis_board:v1';
 
-export async function getDB() {
-  if (!dbPromise) {
+function hasKV() {
+  // Vercel/Upstash expose these env vars. If they aren't present, fall back to local lowdb.
+  return Boolean(
+    process.env.KV_REST_API_URL &&
+      process.env.KV_REST_API_TOKEN &&
+      process.env.KV_REST_API_READ_ONLY_TOKEN
+  );
+}
+
+let lowDbPromise: Promise<Low<DBData>> | null = null;
+async function getLowDB() {
+  if (!lowDbPromise) {
     const file = path.join(process.cwd(), 'data', 'db.json');
     const adapter = new JSONFile<DBData>(file);
     const db = new Low<DBData>(adapter, defaultData);
-    dbPromise = (async () => {
+    lowDbPromise = (async () => {
       await db.read();
       db.data ||= defaultData;
       await db.write();
       return db;
     })();
   }
-  return dbPromise;
+  return lowDbPromise;
+}
+
+export async function readData(): Promise<DBData> {
+  if (hasKV()) {
+    const data = await kv.get<DBData>(KV_KEY);
+    return data ?? defaultData;
+  }
+
+  const db = await getLowDB();
+  return db.data ?? defaultData;
+}
+
+export async function writeData(data: DBData): Promise<void> {
+  if (hasKV()) {
+    await kv.set(KV_KEY, data);
+    return;
+  }
+
+  const db = await getLowDB();
+  db.data = data;
+  await db.write();
+}
+
+export async function updateData<T>(fn: (data: DBData) => T | Promise<T>): Promise<T> {
+  // MVP: read-modify-write. Good enough for single-user usage.
+  const data = await readData();
+  const result = await fn(data);
+  await writeData(data);
+  return result;
 }
 
 export function nowISO() {
