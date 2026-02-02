@@ -14,11 +14,11 @@
       "id": "ad3c17ec-ef7e-4eae-a2a8-2b057257777a",
       "title": "Protect Jarvis-board main branch",
       "description": "Enable branch protection rules on OrazioP26/Jarvis-board (require PRs + status checks once workflows exist; block force-push; require signed commits if desired).",
-      "status": "todo",
+      "status": "in_progress",
       "assignee": "Jarvis",
       "order": 1,
       "createdAt": "2026-02-02T14:00:00Z",
-      "updatedAt": "2026-02-02T14:00:00Z"
+      "updatedAt": "2026-02-02T14:05:45Z"
     },
     {
       "id": "216e0699-3c95-4801-8aa6-9d4aaa1aabf0",
@@ -34,11 +34,11 @@
       "id": "e7692b61-8593-4d9c-9837-e8d3e8ac425e",
       "title": "Enable security scanning where possible",
       "description": "Enable Dependabot alerts / dependency graph; consider GitHub Advanced Security or making relevant repos public if acceptable; set up CodeQL + secret scanning for supported repos.",
-      "status": "todo",
+      "status": "in_progress",
       "assignee": "Jarvis",
       "order": 3,
       "createdAt": "2026-02-02T14:00:00Z",
-      "updatedAt": "2026-02-02T14:00:00Z"
+      "updatedAt": "2026-02-02T14:05:45Z"
     },
     {
       "id": "bf3a3038-1296-48ed-a802-e15ae91431d8",
@@ -59,6 +59,26 @@
       "order": 5,
       "createdAt": "2026-02-02T14:00:00Z",
       "updatedAt": "2026-02-02T14:00:00Z"
+    },
+    {
+      "id": "24dbe470-4183-42a0-9ff3-8a2ac74caa4f",
+      "title": "Add CI workflow (lint + build) to Jarvis-board",
+      "description": "Create .github/workflows/ci.yml to run on PRs + main: npm ci, npm run lint, npm run build. This enables branch protection to require status checks.",
+      "status": "todo",
+      "assignee": "Jarvis",
+      "order": 6,
+      "createdAt": "2026-02-02T14:05:45Z",
+      "updatedAt": "2026-02-02T14:05:45Z"
+    },
+    {
+      "id": "7ec348fc-6c5d-4530-87fa-9de233201560",
+      "title": "Add Dependabot for npm + GitHub Actions (Jarvis-board)",
+      "description": "Create .github/dependabot.yml for npm (weekly) + github-actions (weekly). Enable dependency graph/alerts in repo settings if not already.",
+      "status": "todo",
+      "assignee": "Jarvis",
+      "order": 7,
+      "createdAt": "2026-02-02T14:05:45Z",
+      "updatedAt": "2026-02-02T14:05:45Z"
     }
   ],
   "deliverables": [
