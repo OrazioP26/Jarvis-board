@@ -2,13 +2,13 @@
   "tasks": [
     {
       "id": "seed-1",
-      "title": "Welcome to novl-dashboard",
-      "description": "Drag me between columns. Edit me. Assign me.",
-      "status": "todo",
+      "title": "Welcome to Jarvis-board",
+      "description": "Seed task. Archived once the board has real work.",
+      "status": "archived",
       "assignee": "Unassigned",
       "order": 0,
       "createdAt": "2026-02-01T00:00:00.000Z",
-      "updatedAt": "2026-02-01T00:00:00.000Z"
+      "updatedAt": "2026-02-02T22:56:00.000Z"
     },
     {
       "id": "ad3c17ec-ef7e-4eae-a2a8-2b057257777a",
@@ -43,12 +43,12 @@
     {
       "id": "bf3a3038-1296-48ed-a802-e15ae91431d8",
       "title": "Update dev tooling to address npm audit warnings",
-      "description": "In novl-dashboard: upgrade vitest (major bump suggested) and ensure vite/esbuild versions patched; re-run npm audit.",
-      "status": "todo",
+      "description": "(Not Jarvis-board) This task belongs to the Novl dashboard/web repo. Moved to archived here to avoid confusion; re-add to the correct board/project.",
+      "status": "archived",
       "assignee": "Orazio",
       "order": 4,
       "createdAt": "2026-02-02T14:00:00Z",
-      "updatedAt": "2026-02-02T14:00:00Z"
+      "updatedAt": "2026-02-02T22:56:00.000Z"
     },
     {
       "id": "8a6c4c6a-1ac3-41a8-8108-edb487c7e020",
@@ -64,21 +64,21 @@
       "id": "24dbe470-4183-42a0-9ff3-8a2ac74caa4f",
       "title": "Add CI workflow (lint + build) to Jarvis-board",
       "description": "Create .github/workflows/ci.yml to run on PRs + main: npm ci, npm run lint, npm run build. This enables branch protection to require status checks.",
-      "status": "todo",
+      "status": "done",
       "assignee": "Jarvis",
       "order": 6,
       "createdAt": "2026-02-02T14:05:45Z",
-      "updatedAt": "2026-02-02T14:05:45Z"
+      "updatedAt": "2026-02-02T22:56:00.000Z"
     },
     {
       "id": "7ec348fc-6c5d-4530-87fa-9de233201560",
       "title": "Add Dependabot for npm + GitHub Actions (Jarvis-board)",
       "description": "Create .github/dependabot.yml for npm (weekly) + github-actions (weekly). Enable dependency graph/alerts in repo settings if not already.",
-      "status": "todo",
+      "status": "done",
       "assignee": "Jarvis",
       "order": 7,
       "createdAt": "2026-02-02T14:05:45Z",
-      "updatedAt": "2026-02-02T14:05:45Z"
+      "updatedAt": "2026-02-02T22:56:00.000Z"
     }
   ],
   "deliverables": [

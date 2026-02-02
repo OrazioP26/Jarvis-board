@@ -23,9 +23,19 @@ export function AgentStatus() {
   }
 
   useEffect(() => {
-    refresh();
-    const t = setInterval(refresh, 15000);
-    return () => clearInterval(t);
+    // Avoid calling setState synchronously inside the effect body.
+    const t0 = setTimeout(() => {
+      void refresh();
+    }, 0);
+
+    const t = setInterval(() => {
+      void refresh();
+    }, 15000);
+
+    return () => {
+      clearTimeout(t0);
+      clearInterval(t);
+    };
   }, []);
 
   const state = status?.state ?? 'idle';

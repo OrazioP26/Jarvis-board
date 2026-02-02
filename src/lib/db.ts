@@ -70,7 +70,7 @@ async function getLowDB() {
 }
 
 function normalizeData(data: DBData | null | undefined): DBData {
-  const d: any = data ?? {};
+  const d = (data ?? {}) as Partial<DBData>;
   return {
     tasks: Array.isArray(d.tasks) ? d.tasks : [],
     deliverables: Array.isArray(d.deliverables) ? d.deliverables : [],
@@ -96,7 +96,7 @@ export async function readData(): Promise<DBData> {
   }
 
   const db = await getLowDB();
-  return normalizeData((db.data as any) ?? null);
+  return normalizeData(db.data ?? null);
 }
 
 export async function writeData(data: DBData): Promise<void> {

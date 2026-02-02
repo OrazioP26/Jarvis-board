@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { nowISO, updateData } from '@/lib/db';
 import { recordActivity } from '@/lib/activity';
+import type { Task } from '@/lib/types';
 
 const UpdateTaskSchema = z
   .object({
@@ -13,7 +14,7 @@ const UpdateTaskSchema = z
   })
   .strict();
 
-function reorderWithinStatus(tasks: any[], status: string) {
+function reorderWithinStatus(tasks: Task[], status: Task['status']) {
   const inCol = tasks
     .filter((t) => t.status === status)
     .sort((a, b) => a.order - b.order);

@@ -1,4 +1,4 @@
-# novl-dashboard
+# Jarvis-board
 
 Lightweight **local-only** task dashboard for Orazio + Jarvis.
 
