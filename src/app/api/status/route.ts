@@ -18,6 +18,7 @@ export async function GET() {
     state: isWorking ? 'working' : 'idle',
     now,
     lastActivityAt: last,
+    lastActivityNote: data.lastActivityNote ?? null,
     recent: (data.activity ?? []).slice(0, 5),
   });
 }

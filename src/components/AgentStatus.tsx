@@ -6,6 +6,7 @@ type StatusResp = {
   state: 'working' | 'idle';
   now: string;
   lastActivityAt: string | null;
+  lastActivityNote?: string | null;
 };
 
 export function AgentStatus() {
@@ -57,6 +58,7 @@ export function AgentStatus() {
       {status?.lastActivityAt ? (
         <div className="hidden text-xs text-zinc-400 md:block">
           last: {new Date(status.lastActivityAt).toLocaleTimeString()}
+          {status.lastActivityNote ? ` · ${status.lastActivityNote}` : ''}
         </div>
       ) : null}
     </div>
