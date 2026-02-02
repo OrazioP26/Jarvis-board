@@ -9,6 +9,56 @@
       "order": 0,
       "createdAt": "2026-02-01T00:00:00.000Z",
       "updatedAt": "2026-02-01T00:00:00.000Z"
+    },
+    {
+      "id": "ad3c17ec-ef7e-4eae-a2a8-2b057257777a",
+      "title": "Protect Jarvis-board main branch",
+      "description": "Enable branch protection rules on OrazioP26/Jarvis-board (require PRs + status checks once workflows exist; block force-push; require signed commits if desired).",
+      "status": "todo",
+      "assignee": "Jarvis",
+      "order": 1,
+      "createdAt": "2026-02-02T14:00:00Z",
+      "updatedAt": "2026-02-02T14:00:00Z"
+    },
+    {
+      "id": "216e0699-3c95-4801-8aa6-9d4aaa1aabf0",
+      "title": "Review Novl-desktop collaborators",
+      "description": "Confirm anthonytast + Markus112105 still need push access; reduce to least-privilege (triage/pull) if possible.",
+      "status": "todo",
+      "assignee": "Jarvis",
+      "order": 2,
+      "createdAt": "2026-02-02T14:00:00Z",
+      "updatedAt": "2026-02-02T14:00:00Z"
+    },
+    {
+      "id": "e7692b61-8593-4d9c-9837-e8d3e8ac425e",
+      "title": "Enable security scanning where possible",
+      "description": "Enable Dependabot alerts / dependency graph; consider GitHub Advanced Security or making relevant repos public if acceptable; set up CodeQL + secret scanning for supported repos.",
+      "status": "todo",
+      "assignee": "Jarvis",
+      "order": 3,
+      "createdAt": "2026-02-02T14:00:00Z",
+      "updatedAt": "2026-02-02T14:00:00Z"
+    },
+    {
+      "id": "bf3a3038-1296-48ed-a802-e15ae91431d8",
+      "title": "Update dev tooling to address npm audit warnings",
+      "description": "In novl-dashboard: upgrade vitest (major bump suggested) and ensure vite/esbuild versions patched; re-run npm audit.",
+      "status": "todo",
+      "assignee": "Orazio",
+      "order": 4,
+      "createdAt": "2026-02-02T14:00:00Z",
+      "updatedAt": "2026-02-02T14:00:00Z"
+    },
+    {
+      "id": "8a6c4c6a-1ac3-41a8-8108-edb487c7e020",
+      "title": "Harden Clawdbot secrets handling",
+      "description": "Ensure ~/.clawdbot/clawdbot.json has restrictive permissions (600). Consider moving API keys to 1Password/env injection or macOS Keychain; rotate Telegram bot token + OpenAI keys if exposure suspected.",
+      "status": "todo",
+      "assignee": "Jarvis",
+      "order": 5,
+      "createdAt": "2026-02-02T14:00:00Z",
+      "updatedAt": "2026-02-02T14:00:00Z"
     }
   ],
   "deliverables": [
@@ -19,6 +69,22 @@
       "notes": "Where the setup + roadmap live",
       "createdAt": "2026-02-01T00:00:00.000Z",
       "updatedAt": "2026-02-01T00:00:00.000Z"
+    },
+    {
+      "id": "26eb6611-5659-4f25-9a7b-eb0916a8dcbd",
+      "name": "Weekly Security Audit (2026-02-02)",
+      "link": "./data/security-audit-2026-02-02.md",
+      "notes": "Findings + risks + recommended actions",
+      "createdAt": "2026-02-02T14:00:00Z",
+      "updatedAt": "2026-02-02T14:00:00Z"
+    },
+    {
+      "id": "a90512a5-36d0-4fbe-8c69-3a8249b08c72",
+      "name": "Activity Log",
+      "link": "./data/activity-log.md",
+      "notes": "Running log of ops work (including security audits)",
+      "createdAt": "2026-02-02T14:00:00Z",
+      "updatedAt": "2026-02-02T14:00:00Z"
     }
   ]
 }
