@@ -36,6 +36,7 @@ export interface ActivityEvent {
   kind: ActivityKind;
   message: string;
   createdAt: string;
+  source?: 'user' | 'jarvis';
 }
 
 export const STATUSES: Array<{ key: Status; label: string }> = [

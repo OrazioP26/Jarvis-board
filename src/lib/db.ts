@@ -9,6 +9,7 @@ export type DBData = {
   deliverables: Deliverable[];
   activity: ActivityEvent[];
   lastActivityAt: string | null;
+  lastActivityNote: string | null;
 };
 
 const defaultData: DBData = {
@@ -16,6 +17,7 @@ const defaultData: DBData = {
   deliverables: [],
   activity: [],
   lastActivityAt: null,
+  lastActivityNote: null,
 };
 
 const KV_KEY = 'jarvis_board:v1';
@@ -74,6 +76,7 @@ function normalizeData(data: DBData | null | undefined): DBData {
     deliverables: Array.isArray(d.deliverables) ? d.deliverables : [],
     activity: Array.isArray(d.activity) ? d.activity : [],
     lastActivityAt: typeof d.lastActivityAt === 'string' ? d.lastActivityAt : null,
+    lastActivityNote: typeof d.lastActivityNote === 'string' ? d.lastActivityNote : null,
   };
 }
 
