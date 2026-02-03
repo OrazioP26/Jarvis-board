@@ -43,9 +43,29 @@ export function TaskCard({
             <div className="mt-1 max-h-9 overflow-hidden text-xs text-zinc-600">{task.description}</div>
           ) : null}
         </div>
-        <span className="rounded-full bg-zinc-100 px-2 py-1 text-[11px] font-medium text-zinc-700">
-          {task.assignee}
-        </span>
+        <div className="flex flex-col items-end gap-1">
+          <span className="rounded-full bg-zinc-100 px-2 py-1 text-[11px] font-medium text-zinc-700">
+            {task.assignee}
+          </span>
+          {task.automation?.enabled ? (
+            <span
+              className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                task.automation.state === 'running' || task.automation.state === 'spawning'
+                  ? 'bg-emerald-50 text-emerald-700'
+                  : task.automation.state === 'blocked'
+                    ? 'bg-amber-50 text-amber-700'
+                    : task.automation.state === 'error'
+                      ? 'bg-rose-50 text-rose-700'
+                      : task.automation.state === 'done'
+                        ? 'bg-zinc-100 text-zinc-600'
+                        : 'bg-zinc-50 text-zinc-600'
+              }`}
+              title={task.automation.error ?? task.automation.state}
+            >
+              {task.automation.state.replace('_', ' ')}
+            </span>
+          ) : null}
+        </div>
       </div>
       <div className="mt-2 text-[11px] text-zinc-400">Updated {new Date(task.updatedAt).toLocaleString()}</div>
     </button>

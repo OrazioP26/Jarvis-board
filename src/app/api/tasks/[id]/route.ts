@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { nowISO, updateData } from '@/lib/db';
 import { recordActivity } from '@/lib/activity';
+import { startAutomationForTask } from '@/lib/agentLoop';
 import type { Task } from '@/lib/types';
 
 const UpdateTaskSchema = z
@@ -62,6 +63,12 @@ export async function PATCH(
   });
 
   if (!task) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+  // Fire-and-forget: if the task is assigned to Jarvis, let the agent loop pick it up.
+  if (task.automation?.enabled) {
+    void startAutomationForTask(task.id);
+  }
+
   return NextResponse.json({ task });
 }
 

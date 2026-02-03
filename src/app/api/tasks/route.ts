@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import { z } from 'zod';
 import { nowISO, updateData } from '@/lib/db';
 import { recordActivity } from '@/lib/activity';
+import { defaultAutomationForTask, startAutomationForTask } from '@/lib/agentLoop';
 import type { Status, Task } from '@/lib/types';
 
 const CreateTaskSchema = z.object({
@@ -44,7 +45,7 @@ export async function POST(req: Request) {
         .map((t) => t.order))
     );
 
-    const newTask: Task = {
+    const base: Task = {
       id: nanoid(),
       title,
       description: description || undefined,
@@ -55,10 +56,20 @@ export async function POST(req: Request) {
       updatedAt: now,
     };
 
+    const newTask: Task = {
+      ...base,
+      automation: defaultAutomationForTask(base),
+    };
+
     data.tasks.push(newTask);
     recordActivity(data, 'task.created', `Created task: ${newTask.title}`);
     return newTask;
   });
+
+  // Fire-and-forget automation start (best-effort). If disabled/misconfigured, task still returns normally.
+  if (task?.automation?.enabled) {
+    void startAutomationForTask(task.id);
+  }
 
   return NextResponse.json({ task }, { status: 201 });
 }

@@ -2,6 +2,25 @@ export type Status = 'todo' | 'in_progress' | 'done' | 'archived';
 
 export type Assignee = 'Orazio' | 'Jarvis' | 'Unassigned';
 
+export type AutomationState =
+  | 'not_started'
+  | 'spawning'
+  | 'running'
+  | 'blocked'
+  | 'done'
+  | 'error';
+
+export type TaskAutomation = {
+  enabled: boolean;
+  state: AutomationState;
+  childSessionKey?: string;
+  runId?: string;
+  startedAt?: string;
+  finishedAt?: string;
+  lastCheckedAt?: string;
+  error?: string;
+};
+
 export interface Task {
   id: string;
   title: string;
@@ -11,6 +30,7 @@ export interface Task {
   order: number; // smaller = higher in column
   createdAt: string;
   updatedAt: string;
+  automation?: TaskAutomation;
 }
 
 export interface Deliverable {
@@ -29,6 +49,11 @@ export type ActivityKind =
   | 'deliverable.created'
   | 'deliverable.updated'
   | 'deliverable.deleted'
+  | 'agent.loop.started'
+  | 'agent.loop.progress'
+  | 'agent.loop.finished'
+  | 'agent.loop.blocked'
+  | 'agent.loop.error'
   | 'system.heartbeat';
 
 export interface ActivityEvent {

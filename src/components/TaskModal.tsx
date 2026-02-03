@@ -24,6 +24,7 @@ export function TaskModal({
   const [status, setStatus] = useState<Status>('todo');
   const [assignee, setAssignee] = useState<Assignee>('Unassigned');
   const [saving, setSaving] = useState(false);
+  const [retrying, setRetrying] = useState(false);
 
   const isEdit = !!initial?.id;
 
@@ -63,6 +64,26 @@ export function TaskModal({
       onClose();
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function retryAutomation() {
+    if (!isEdit) return;
+    setRetrying(true);
+    try {
+      // This triggers the server-side agent loop because tasks assigned to Jarvis
+      // will auto-start automation when eligible.
+      const res = await fetch(`/api/tasks/${initial!.id}`, {
+        method: 'PATCH',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ status: 'todo', assignee: 'Jarvis' }),
+      });
+      if (!res.ok) throw new Error('Failed to retry');
+      const json = await res.json();
+      onSaved(json.task);
+      onClose();
+    } finally {
+      setRetrying(false);
     }
   }
 
@@ -145,6 +166,25 @@ export function TaskModal({
               </select>
             </div>
           </div>
+
+          {isEdit && initial?.automation?.enabled ? (
+            <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-3 text-sm text-zinc-700">
+              <div className="font-medium">Automation</div>
+              <div className="mt-1 text-xs text-zinc-600">
+                State: <span className="font-semibold">{initial.automation.state}</span>
+                {initial.automation.error ? ` · ${initial.automation.error}` : ''}
+              </div>
+              <div className="mt-2">
+                <Button
+                  variant="secondary"
+                  onClick={retryAutomation}
+                  disabled={saving || retrying}
+                >
+                  {retrying ? 'Retrying…' : 'Retry automation'}
+                </Button>
+              </div>
+            </div>
+          ) : null}
 
           <div className="flex flex-wrap items-center justify-between gap-2 pt-2">
             <div>
