@@ -13,12 +13,12 @@
     {
       "id": "ad3c17ec-ef7e-4eae-a2a8-2b057257777a",
       "title": "Protect Jarvis-board main branch",
-      "description": "Enable branch protection rules on OrazioP26/Jarvis-board (require PRs + status checks once workflows exist; block force-push; require signed commits if desired).",
+      "description": "Today checklist:\n- In GitHub repo settings → Branches: protect main\n- Require PRs (no direct pushes)\n- Require status checks: CI / build\n- Block force-push + deletions\n- Decide: require signed commits? require linear history?\n- Verify with a test PR + ensure CI is required before merge",
       "status": "in_progress",
       "assignee": "Jarvis",
-      "order": 1,
+      "order": 0,
       "createdAt": "2026-02-02T14:00:00Z",
-      "updatedAt": "2026-02-02T14:05:45Z"
+      "updatedAt": "2026-02-03T14:01:27.714Z"
     },
     {
       "id": "216e0699-3c95-4801-8aa6-9d4aaa1aabf0",
@@ -26,19 +26,19 @@
       "description": "Confirm anthonytast + Markus112105 still need push access; reduce to least-privilege (triage/pull) if possible.",
       "status": "todo",
       "assignee": "Jarvis",
-      "order": 2,
+      "order": 1,
       "createdAt": "2026-02-02T14:00:00Z",
       "updatedAt": "2026-02-02T14:00:00Z"
     },
     {
       "id": "e7692b61-8593-4d9c-9837-e8d3e8ac425e",
       "title": "Enable security scanning where possible",
-      "description": "Enable Dependabot alerts / dependency graph; consider GitHub Advanced Security or making relevant repos public if acceptable; set up CodeQL + secret scanning for supported repos.",
-      "status": "in_progress",
+      "description": "Break into repo-sized chunks. Starting with Jarvis-board:\n- Add CodeQL GitHub Action workflow (JS/TS)\n- Ensure Dependabot alerts + dependency graph enabled in repo settings\nThen: audit Novl repos (api/dashboard/desktop) for same.",
+      "status": "todo",
       "assignee": "Jarvis",
-      "order": 3,
+      "order": 0,
       "createdAt": "2026-02-02T14:00:00Z",
-      "updatedAt": "2026-02-02T14:05:45Z"
+      "updatedAt": "2026-02-03T14:01:27.729Z"
     },
     {
       "id": "bf3a3038-1296-48ed-a802-e15ae91431d8",
@@ -56,7 +56,7 @@
       "description": "Ensure ~/.clawdbot/clawdbot.json has restrictive permissions (600). Consider moving API keys to 1Password/env injection or macOS Keychain; rotate Telegram bot token + OpenAI keys if exposure suspected.",
       "status": "todo",
       "assignee": "Jarvis",
-      "order": 5,
+      "order": 2,
       "createdAt": "2026-02-02T14:00:00Z",
       "updatedAt": "2026-02-02T14:00:00Z"
     },
@@ -79,6 +79,26 @@
       "order": 7,
       "createdAt": "2026-02-02T14:05:45Z",
       "updatedAt": "2026-02-02T22:56:00.000Z"
+    },
+    {
+      "id": "jWJo33EsECXbx8yUpWESg",
+      "title": "PR: Add CodeQL workflow (Jarvis-board)",
+      "description": "Add .github/workflows/codeql.yml using GitHub’s CodeQL template for JavaScript/TypeScript. Run on PR + main push + weekly schedule. Ensure it passes.",
+      "status": "todo",
+      "assignee": "Jarvis",
+      "order": 3,
+      "createdAt": "2026-02-03T14:01:27.745Z",
+      "updatedAt": "2026-02-03T14:01:27.745Z"
+    },
+    {
+      "id": "a8VCB5WIIohEktghi6TOS",
+      "title": "Lock down Clawdbot secrets on disk",
+      "description": "- chmod 600 ~/.clawdbot/clawdbot.json\n- Verify bot still runs\n- Decide whether to rotate Telegram token + OpenAI keys now\n- Optional: migrate secrets to 1Password/Keychain/env injection",
+      "status": "todo",
+      "assignee": "Jarvis",
+      "order": 4,
+      "createdAt": "2026-02-03T14:01:27.757Z",
+      "updatedAt": "2026-02-03T14:01:27.757Z"
     }
   ],
   "deliverables": [
@@ -105,6 +125,98 @@
       "notes": "Running log of ops work (including security audits)",
       "createdAt": "2026-02-02T14:00:00Z",
       "updatedAt": "2026-02-02T14:00:00Z"
+    },
+    {
+      "id": "sched-morning-brief",
+      "name": "Morning Brief (daily)",
+      "link": "cron:Morning Brief",
+      "notes": "Daily digest: weather + priorities + blockers + news + X threads + podcasts",
+      "createdAt": "2026-02-03T14:10:00Z",
+      "updatedAt": "2026-02-03T14:10:00Z"
+    },
+    {
+      "id": "sched-afternoon-x",
+      "name": "Afternoon X/AI Trends (daily)",
+      "link": "cron:Afternoon X/AI Trends",
+      "notes": "Scan X for AI/tech trends + anything relevant to Novl",
+      "createdAt": "2026-02-03T14:10:00Z",
+      "updatedAt": "2026-02-03T14:10:00Z"
+    },
+    {
+      "id": "sched-sprint-start",
+      "name": "Sprint Start Plan (weekday 9am)",
+      "link": "cron:Sprint Start Plan (Jarvis)",
+      "notes": "10-minute daily sprint plan + test steps + update board",
+      "createdAt": "2026-02-03T14:10:00Z",
+      "updatedAt": "2026-02-03T14:10:00Z"
+    },
+    {
+      "id": "sched-sprint-end",
+      "name": "Sprint End Wrap (weekday 7:30pm)",
+      "link": "cron:Sprint End Wrap (Jarvis)",
+      "notes": "End-of-day wrap: shipped/blocked/test next/top priority; update board",
+      "createdAt": "2026-02-03T14:10:00Z",
+      "updatedAt": "2026-02-03T14:10:00Z"
+    },
+    {
+      "id": "sched-weekly-planning",
+      "name": "Weekly Planning (Sun 8pm)",
+      "link": "cron:Weekly Planning (Jarvis)",
+      "notes": "Review board + propose top outcomes + week plan",
+      "createdAt": "2026-02-03T14:10:00Z",
+      "updatedAt": "2026-02-03T14:10:00Z"
+    },
+    {
+      "id": "sched-weekly-security",
+      "name": "Weekly Security Audit (Mon 9am)",
+      "link": "cron:Weekly Security Audit",
+      "notes": "Security audit reminder + report; log in activity",
+      "createdAt": "2026-02-03T14:10:00Z",
+      "updatedAt": "2026-02-03T14:10:00Z"
+    },
+    {
+      "id": "sched-novl-maintenance",
+      "name": "Novl Proactive Maintenance (every 2h)",
+      "link": "cron:Novl Proactive Maintenance (every 2h)",
+      "notes": "Next tasks + Claude Code prompts + manual test steps",
+      "createdAt": "2026-02-03T14:10:00Z",
+      "updatedAt": "2026-02-03T14:10:00Z"
+    },
+    {
+      "id": "sched-automation-scout",
+      "name": "Automation Scout (every 4h)",
+      "link": "cron:Automation Scout (AI tools + ClawdHub skills)",
+      "notes": "Find new workflow automations + tools/skills; send concise ideas",
+      "createdAt": "2026-02-03T14:10:00Z",
+      "updatedAt": "2026-02-03T14:10:00Z"
     }
-  ]
+  ],
+  "activity": [
+    {
+      "id": "myFRAPSXojfpvp3cNqSSS",
+      "kind": "task.created",
+      "message": "Created task: Lock down Clawdbot secrets on disk",
+      "createdAt": "2026-02-03T14:01:27.757Z"
+    },
+    {
+      "id": "6FOPJB2O77WuAAZATjVlM",
+      "kind": "task.created",
+      "message": "Created task: PR: Add CodeQL workflow (Jarvis-board)",
+      "createdAt": "2026-02-03T14:01:27.745Z"
+    },
+    {
+      "id": "iV_YYsX9yFJM5fn1nppoa",
+      "kind": "task.updated",
+      "message": "Updated task: Enable security scanning where possible",
+      "createdAt": "2026-02-03T14:01:27.729Z"
+    },
+    {
+      "id": "iP6GuTU66km1pl2tBntEV",
+      "kind": "task.updated",
+      "message": "Updated task: Protect Jarvis-board main branch",
+      "createdAt": "2026-02-03T14:01:27.714Z"
+    }
+  ],
+  "lastActivityAt": "2026-02-03T14:01:27.757Z",
+  "lastActivityNote": null
 }

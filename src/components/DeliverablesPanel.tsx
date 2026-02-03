@@ -58,8 +58,10 @@ export function DeliverablesPanel() {
     <div className="mt-6 rounded-xl border border-zinc-200 bg-white p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 className="text-base font-semibold text-zinc-900">Deliverables</h2>
-          <p className="text-sm text-zinc-500">A lightweight folder/list of artifacts (links, paths, notes)</p>
+          <h2 className="text-base font-semibold text-zinc-900">Scheduled Deliverables</h2>
+          <p className="text-sm text-zinc-500">
+            Recurring reports/newsletters/check-ins (daily/weekly) that keep Jarvis memory + operations organized
+          </p>
         </div>
         <Button variant="secondary" onClick={refresh}>
           Refresh
@@ -69,11 +71,11 @@ export function DeliverablesPanel() {
       <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
         <div>
           <label className="text-sm font-medium text-zinc-700">Name</label>
-          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. pitch-deck-v3" />
+          <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Morning Brief (daily)" />
         </div>
         <div>
           <label className="text-sm font-medium text-zinc-700">Link / Path</label>
-          <Input value={link} onChange={(e) => setLink(e.target.value)} placeholder="URL or ./relative/path" />
+          <Input value={link} onChange={(e) => setLink(e.target.value)} placeholder="Source URL, cron/job id, or ./relative/path" />
         </div>
         <div className="md:col-span-3">
           <label className="text-sm font-medium text-zinc-700">Notes</label>
@@ -81,16 +83,16 @@ export function DeliverablesPanel() {
         </div>
         <div className="md:col-span-3 flex justify-end">
           <Button onClick={add} disabled={saving || !name.trim()}>
-            {saving ? 'Adding…' : 'Add deliverable'}
+            {saving ? 'Adding…' : 'Add scheduled deliverable'}
           </Button>
         </div>
       </div>
 
       <div className="mt-4">
         {loading ? (
-          <div className="text-sm text-zinc-600">Loading deliverables…</div>
+          <div className="text-sm text-zinc-600">Loading scheduled deliverables…</div>
         ) : deliverables.length === 0 ? (
-          <div className="text-sm text-zinc-500">No deliverables yet.</div>
+          <div className="text-sm text-zinc-500">No scheduled deliverables yet.</div>
         ) : (
           <ul className="divide-y divide-zinc-100 rounded-lg border border-zinc-200">
             {deliverables.map((d) => (
