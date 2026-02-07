@@ -13,32 +13,32 @@
     {
       "id": "ad3c17ec-ef7e-4eae-a2a8-2b057257777a",
       "title": "Protect Jarvis-board main branch",
-      "description": "Today checklist:\n- In GitHub repo settings → Branches: protect main\n- Require PRs (no direct pushes)\n- Require status checks: CI / build\n- Block force-push + deletions\n- Decide: require signed commits? require linear history?\n- Verify with a test PR + ensure CI is required before merge",
+      "description": "Blocked on GitHub UI/admin. Proposed branch protection for `main` (Jarvis-board):\n\nBranch protection rule: `main`\n- Require a pull request before merging (✅)\n  - Required approvals: 1\n  - Dismiss stale approvals when new commits are pushed (✅)\n  - Require review from Code Owners (optional; only if CODEOWNERS exists)\n- Require status checks to pass before merging (✅)\n  - CI (from .github/workflows/ci.yml)\n  - CodeQL (from .github/workflows/codeql.yml)\n- Require conversation resolution before merging (✅)\n- Require signed commits (optional)\n- Require linear history (optional)\n- Do not allow bypassing the above settings (✅)\n- Restrict who can push to matching branches (optional; can leave off for now)\n- Allow force pushes / deletions (❌)\n\nTest after enabling:\n1) Try direct push to main → should be blocked\n2) Open PR from branch → checks run, merge allowed only after green checks + approval.",
       "status": "in_progress",
       "assignee": "Jarvis",
       "order": 0,
       "createdAt": "2026-02-02T14:00:00Z",
-      "updatedAt": "2026-02-03T14:01:27.714Z"
+      "updatedAt": "2026-02-04T14:02:18.345Z"
     },
     {
       "id": "216e0699-3c95-4801-8aa6-9d4aaa1aabf0",
       "title": "Review Novl-desktop collaborators",
-      "description": "Confirm anthonytast + Markus112105 still need push access; reduce to least-privilege (triage/pull) if possible.",
-      "status": "todo",
-      "assignee": "Jarvis",
-      "order": 1,
-      "createdAt": "2026-02-02T14:00:00Z",
-      "updatedAt": "2026-02-02T14:00:00Z"
-    },
-    {
-      "id": "e7692b61-8593-4d9c-9837-e8d3e8ac425e",
-      "title": "Enable security scanning where possible",
-      "description": "Break into repo-sized chunks. Starting with Jarvis-board:\n- Add CodeQL GitHub Action workflow (JS/TS)\n- Ensure Dependabot alerts + dependency graph enabled in repo settings\nThen: audit Novl repos (api/dashboard/desktop) for same.",
+      "description": "Current collaborators (from gh api 2026-02-04):\n- OrazioP26 — admin\n- anthonytast — push\n- Markus112105 — push\n\nDecision needed:\n1) Should anthonytast and/or Markus112105 retain push access?\n2) If not, should we downgrade to triage/pull or remove entirely?\n\nNext step once confirmed: use GitHub UI or `gh api` to update permissions/remove collaborators.",
       "status": "todo",
       "assignee": "Jarvis",
       "order": 0,
       "createdAt": "2026-02-02T14:00:00Z",
-      "updatedAt": "2026-02-03T14:01:27.729Z"
+      "updatedAt": "2026-02-04T14:02:10.258Z"
+    },
+    {
+      "id": "e7692b61-8593-4d9c-9837-e8d3e8ac425e",
+      "title": "Enable security scanning where possible",
+      "description": "Repo-side scanning already added in-code for Jarvis-board:\n- Dependabot config: `.github/dependabot.yml`\n- CodeQL workflow: `.github/workflows/codeql.yml`\n- CI workflow: `.github/workflows/ci.yml`\n\nBlocked on GitHub UI/admin toggles (Settings → Security):\n1) Enable **Dependabot alerts**\n2) Enable **Dependabot security updates**\n3) Enable **Secret scanning** (and push protection if available)\n4) Ensure **Code scanning alerts** are enabled (CodeQL runs should populate)\n\nTest/verify after enabling:\n- Create a dummy PR that bumps a known-vuln package (or run `npm audit`) → confirm Dependabot alerts show\n- Confirm CodeQL run appears in Actions and code scanning alerts page.",
+      "status": "in_progress",
+      "assignee": "Jarvis",
+      "order": 1,
+      "createdAt": "2026-02-02T14:00:00Z",
+      "updatedAt": "2026-02-04T14:02:25.696Z"
     },
     {
       "id": "bf3a3038-1296-48ed-a802-e15ae91431d8",
@@ -53,12 +53,12 @@
     {
       "id": "8a6c4c6a-1ac3-41a8-8108-edb487c7e020",
       "title": "Harden Clawdbot secrets handling",
-      "description": "Ensure ~/.clawdbot/clawdbot.json has restrictive permissions (600). Consider moving API keys to 1Password/env injection or macOS Keychain; rotate Telegram bot token + OpenAI keys if exposure suspected.",
-      "status": "todo",
+      "description": "Hardened baseline locally:\n- Added top-level `.gitignore` (ignores .env, .credentials, key material, logs, build artifacts)\n- Added prompt-injection defense section to `AGENTS.md`\n- Re-ran security audit: **All checks passed**\n\nOpen question: whether to migrate long-lived secrets out of `~/.clawdbot/clawdbot.json` into Keychain/1Password/env injection.",
+      "status": "done",
       "assignee": "Jarvis",
-      "order": 2,
+      "order": 1,
       "createdAt": "2026-02-02T14:00:00Z",
-      "updatedAt": "2026-02-02T14:00:00Z"
+      "updatedAt": "2026-02-04T05:18:59.107Z"
     },
     {
       "id": "24dbe470-4183-42a0-9ff3-8a2ac74caa4f",
@@ -66,7 +66,7 @@
       "description": "Create .github/workflows/ci.yml to run on PRs + main: npm ci, npm run lint, npm run build. This enables branch protection to require status checks.",
       "status": "done",
       "assignee": "Jarvis",
-      "order": 6,
+      "order": 2,
       "createdAt": "2026-02-02T14:05:45Z",
       "updatedAt": "2026-02-02T22:56:00.000Z"
     },
@@ -76,29 +76,81 @@
       "description": "Create .github/dependabot.yml for npm (weekly) + github-actions (weekly). Enable dependency graph/alerts in repo settings if not already.",
       "status": "done",
       "assignee": "Jarvis",
-      "order": 7,
+      "order": 3,
       "createdAt": "2026-02-02T14:05:45Z",
       "updatedAt": "2026-02-02T22:56:00.000Z"
     },
     {
       "id": "jWJo33EsECXbx8yUpWESg",
       "title": "PR: Add CodeQL workflow (Jarvis-board)",
-      "description": "Add .github/workflows/codeql.yml using GitHub’s CodeQL template for JavaScript/TypeScript. Run on PR + main push + weekly schedule. Ensure it passes.",
-      "status": "todo",
+      "description": "CodeQL workflow already present at `.github/workflows/codeql.yml` (push/PR on main + weekly schedule). If a PR is still open upstream, it can be closed/merged accordingly.",
+      "status": "done",
       "assignee": "Jarvis",
-      "order": 3,
+      "order": 4,
       "createdAt": "2026-02-03T14:01:27.745Z",
-      "updatedAt": "2026-02-03T14:01:27.745Z"
+      "updatedAt": "2026-02-04T05:18:43.062Z"
     },
     {
       "id": "a8VCB5WIIohEktghi6TOS",
       "title": "Lock down Clawdbot secrets on disk",
-      "description": "- chmod 600 ~/.clawdbot/clawdbot.json\n- Verify bot still runs\n- Decide whether to rotate Telegram token + OpenAI keys now\n- Optional: migrate secrets to 1Password/Keychain/env injection",
+      "description": "- Verified `~/.clawdbot/clawdbot.json` permissions: `-rw-------` (600)\n- Ran local security-audit script: no exposed secrets detected in workspace; gateway bound to loopback\n- Next decision: rotate Telegram/OpenAI tokens only if exposure suspected (see decision list)",
+      "status": "done",
+      "assignee": "Jarvis",
+      "order": 0,
+      "createdAt": "2026-02-03T14:01:27.757Z",
+      "updatedAt": "2026-02-04T05:18:43.046Z"
+    },
+    {
+      "id": "UL0Jzfc7j2U5mycBJb2oj",
+      "title": "Doc: GitHub repo hardening checklist (Jarvis-board)",
+      "description": "Create a short doc (e.g., docs/repo-hardening.md) that lists exact GitHub Settings toggles + branch protection settings for Jarvis-board, with screenshots optional. Goal: let Orazio flip all switches in <5 minutes.",
+      "status": "in_progress",
+      "assignee": "Jarvis",
+      "order": 3,
+      "createdAt": "2026-02-04T14:02:33.181Z",
+      "updatedAt": "2026-02-05T14:01:40.196Z",
+      "automation": {
+        "enabled": true,
+        "state": "not_started"
+      }
+    },
+    {
+      "id": "e-g-wcO4qsIsZY6UG_1OO",
+      "title": "Script: gh-based security snapshot for a repo",
+      "description": "Add a small script (bash or node) that uses `gh api` to snapshot key repo security settings (branch protection existence, security features availability, etc.) and prints a checklist. Useful for periodic audits.",
+      "status": "in_progress",
+      "assignee": "Jarvis",
+      "order": 2,
+      "createdAt": "2026-02-04T14:02:33.198Z",
+      "updatedAt": "2026-02-05T14:01:43.467Z",
+      "automation": {
+        "enabled": true,
+        "state": "not_started"
+      }
+    },
+    {
+      "id": "p62tnOx_dYy6B3PoW_goz",
+      "title": "Flip GitHub settings for Jarvis-board (branch protection + security toggles)",
+      "description": "Use the checklist doc from this sprint. Needed to unblock: Protect main branch + enable Dependabot/secret scanning/code scanning.",
       "status": "todo",
+      "assignee": "Orazio",
+      "order": 1,
+      "createdAt": "2026-02-05T14:01:51.051Z",
+      "updatedAt": "2026-02-05T14:01:51.051Z"
+    },
+    {
+      "id": "6VabH555aBVGLNC92P23z",
+      "title": "Sprint 2026-02-06 (Fri): GitHub hardening doc + security snapshot",
+      "description": "#1 objective (today): Ship the repo-hardening checklist doc + the gh-based security snapshot script so Orazio can flip all GitHub security + branch protection settings in <5 minutes.\n\nPR-sized tasks (Jarvis):\n1) Finish **docs/repo-hardening.md** in jarvis-board with exact clickpath toggles (Dependabot alerts/updates, secret scanning, code scanning, branch protection).\n2) Implement **scripts/gh-security-snapshot** (bash/node) that prints: branch protection status + required checks + security features enabled + TODO checklist.\n\nExact test prompts/steps:\n- Local doc check: open docs/repo-hardening.md, verify it includes: Settings → Security & analysis toggles + Branches → Branch protection rule fields + which checks to select (CI, CodeQL).\n- Script run (jarvis-board):\n  1) cd jarvis-board\n  2) gh auth status\n  3) ./scripts/gh-security-snapshot.sh OrazioP26/jarvis-board (or node variant)\n  4) Confirm output includes: protection rule exists?; required checks names; dependabot_alerts on/off; secret_scanning on/off; code_scanning on/off.\n- Script run (optional second repo): ./scripts/gh-security-snapshot.sh OrazioP26/novl-api to ensure it handles repos without protection rules gracefully.\n\nBlockers + decisions needed:\n- Needs Orazio GitHub admin clicks for: enabling security toggles + creating branch protection rule (task: “Flip GitHub settings…”).\n- Decision: do we enforce PR-required on main (even for Jarvis-board) once CI+CodeQL are stable? (recommended yes).\n",
+      "status": "in_progress",
       "assignee": "Jarvis",
       "order": 4,
-      "createdAt": "2026-02-03T14:01:27.757Z",
-      "updatedAt": "2026-02-03T14:01:27.757Z"
+      "createdAt": "2026-02-06T14:01:07.371Z",
+      "updatedAt": "2026-02-06T14:01:07.371Z",
+      "automation": {
+        "enabled": true,
+        "state": "not_started"
+      }
     }
   ],
   "deliverables": [
@@ -189,9 +241,121 @@
       "notes": "Find new workflow automations + tools/skills; send concise ideas",
       "createdAt": "2026-02-03T14:10:00Z",
       "updatedAt": "2026-02-03T14:10:00Z"
+    },
+    {
+      "id": "doc-claude-code-tips-2026-02-05",
+      "name": "Claude Code tips (Boris Cherny) — Feb 2026",
+      "link": "https://docs.google.com/document/d/1Leztpk1NTkz2-NiqO_jvxmMbKc50Ri0ZuBDJZ7uPBpQ/edit?usp=drivesdk",
+      "notes": "Key tips: parallel worktrees, plan mode, invest in CLAUDE.md, subagents/skills",
+      "createdAt": "2026-02-05T14:39:00.000Z",
+      "updatedAt": "2026-02-05T14:39:00.000Z"
+    },
+    {
+      "id": "doc-openclaw-costs-97-2026-02-05",
+      "name": "Cut OpenClaw costs by 97% — notes (Feb 2026)",
+      "link": "https://docs.google.com/document/d/1nyngl29RHb5v-FKA-DMWF4YaV1gkzCnEGI7jseV9orU/edit?usp=drivesdk",
+      "notes": "Cost control ideas: model tiering (cheap heartbeats + cheaper subagents) + fallback chains",
+      "createdAt": "2026-02-05T14:39:00.000Z",
+      "updatedAt": "2026-02-05T14:39:00.000Z"
     }
   ],
   "activity": [
+    {
+      "id": "Ni7s0UkXuNY-d84HE6Ma2",
+      "kind": "task.created",
+      "message": "Created task: Sprint 2026-02-06 (Fri): GitHub hardening doc + security snapshot",
+      "createdAt": "2026-02-06T14:01:07.373Z"
+    },
+    {
+      "id": "UaLzQte9wTiPfo1V8Xydd",
+      "kind": "task.created",
+      "message": "Created task: Flip GitHub settings for Jarvis-board (branch protection + security toggles)",
+      "createdAt": "2026-02-05T14:01:51.051Z"
+    },
+    {
+      "id": "17aW2zxMzUyizv3AHihIC",
+      "kind": "task.updated",
+      "message": "Updated task: Script: gh-based security snapshot for a repo",
+      "createdAt": "2026-02-05T14:01:43.467Z"
+    },
+    {
+      "id": "iaqdBPfdEPrbLyYW2Q7r3",
+      "kind": "task.updated",
+      "message": "Updated task: Doc: GitHub repo hardening checklist (Jarvis-board)",
+      "createdAt": "2026-02-05T14:01:40.198Z"
+    },
+    {
+      "id": "ck0mC3PzrFB0AUQyb1cfs",
+      "kind": "task.created",
+      "message": "Created task: Script: gh-based security snapshot for a repo",
+      "createdAt": "2026-02-04T14:02:33.198Z"
+    },
+    {
+      "id": "tieVpgzC97u1ERxcHPvzR",
+      "kind": "task.created",
+      "message": "Created task: Doc: GitHub repo hardening checklist (Jarvis-board)",
+      "createdAt": "2026-02-04T14:02:33.181Z"
+    },
+    {
+      "id": "nfE6vSTXDT058tUu2VzG6",
+      "kind": "task.updated",
+      "message": "Updated task: Enable security scanning where possible",
+      "createdAt": "2026-02-04T14:02:25.696Z"
+    },
+    {
+      "id": "c9TmrROhMF9AXeH7CZVBm",
+      "kind": "task.updated",
+      "message": "Updated task: Protect Jarvis-board main branch",
+      "createdAt": "2026-02-04T14:02:18.345Z"
+    },
+    {
+      "id": "-v0vnp-3_jkb0X1-RJodb",
+      "kind": "task.updated",
+      "message": "Updated task: Review Novl-desktop collaborators",
+      "createdAt": "2026-02-04T14:02:10.259Z"
+    },
+    {
+      "id": "wiaFcEVQAJZKz4AZC4iBl",
+      "kind": "task.updated",
+      "message": "Updated task: Harden Clawdbot secrets handling",
+      "createdAt": "2026-02-04T05:18:59.108Z"
+    },
+    {
+      "id": "rcEvI8V2fyYHB2sGFQ4zx",
+      "kind": "task.updated",
+      "message": "Updated task: Review Novl-desktop collaborators",
+      "createdAt": "2026-02-04T05:18:43.099Z"
+    },
+    {
+      "id": "DPvwo-4R7zdbGob4QJnJI",
+      "kind": "task.updated",
+      "message": "Updated task: Protect Jarvis-board main branch",
+      "createdAt": "2026-02-04T05:18:43.090Z"
+    },
+    {
+      "id": "1inSTAQSzsvq7xuxTLmpc",
+      "kind": "task.updated",
+      "message": "Updated task: Harden Clawdbot secrets handling",
+      "createdAt": "2026-02-04T05:18:43.081Z"
+    },
+    {
+      "id": "A-NJQMpV18wKskRG3WVPG",
+      "kind": "task.updated",
+      "message": "Updated task: Enable security scanning where possible",
+      "createdAt": "2026-02-04T05:18:43.071Z"
+    },
+    {
+      "id": "r_d2ShxK6XxlJ8n8R7Z9_",
+      "kind": "task.updated",
+      "message": "Updated task: PR: Add CodeQL workflow (Jarvis-board)",
+      "createdAt": "2026-02-04T05:18:43.062Z"
+    },
+    {
+      "id": "AgrcFxBXEmYPtMZJB6fBa",
+      "kind": "task.updated",
+      "message": "Updated task: Lock down Clawdbot secrets on disk",
+      "createdAt": "2026-02-04T05:18:43.047Z"
+    },
     {
       "id": "myFRAPSXojfpvp3cNqSSS",
       "kind": "task.created",
@@ -217,6 +381,6 @@
       "createdAt": "2026-02-03T14:01:27.714Z"
     }
   ],
-  "lastActivityAt": "2026-02-03T14:01:27.757Z",
+  "lastActivityAt": "2026-02-06T14:01:07.373Z",
   "lastActivityNote": null
 }

@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/agent-loop/poll",
+      "path": "/api/agent_loop/poll",
       "schedule": "*/1 * * * *"
     }
   ]
