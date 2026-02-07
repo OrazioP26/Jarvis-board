@@ -45,7 +45,15 @@ export async function PATCH(
     if (parsed.data.title !== undefined) task.title = parsed.data.title;
     if (parsed.data.description !== undefined)
       task.description = parsed.data.description || undefined;
-    if (parsed.data.assignee !== undefined) task.assignee = parsed.data.assignee;
+    if (parsed.data.assignee !== undefined) {
+      task.assignee = parsed.data.assignee;
+
+      // If a task becomes assigned to Jarvis after creation, enable automation by default.
+      // (Some clients create tasks as Unassigned, then PATCH assignee.)
+      if (task.assignee === 'Jarvis' && !task.automation) {
+        task.automation = { enabled: true, state: 'not_started' };
+      }
+    }
     if (parsed.data.status !== undefined) task.status = parsed.data.status;
 
     // If order explicitly provided, set it and later normalize.
