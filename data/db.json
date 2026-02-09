@@ -151,6 +151,56 @@
         "enabled": true,
         "state": "not_started"
       }
+    },
+    {
+      "id": "9dacb292-8695-44eb-901e-0afc87197914",
+      "title": "Novl: lock next week outcome + demo definition (Template Intelligence)",
+      "description": "Define: what we will demo by Fri (add-on), what success looks like (latency, slide correctness), and the smallest end-to-end path. Output: 1-pager + checklist.",
+      "status": "todo",
+      "assignee": "Jarvis",
+      "order": 2,
+      "createdAt": "2026-02-09T01:01:44.658Z",
+      "updatedAt": "2026-02-09T01:01:44.658Z"
+    },
+    {
+      "id": "3c5c2c5c-fb1d-4081-8629-5a70afaf01cd",
+      "title": "Novl-Add-On: end-to-end template-backed slide creation demo",
+      "description": "Goal: from a prompt + selected template/archetype → create slide in PowerPoint with correct layout constants & minimal styling regressions. Include a scripted demo flow + verification steps.",
+      "status": "todo",
+      "assignee": "Jarvis",
+      "order": 3,
+      "createdAt": "2026-02-09T01:01:44.658Z",
+      "updatedAt": "2026-02-09T01:01:44.658Z"
+    },
+    {
+      "id": "56da8461-6210-4e37-a3ab-fabb6da28fcd",
+      "title": "Novl-API: harden template endpoints + schema extraction contract",
+      "description": "Tighten request/response schemas, add error handling, and add at least one integration test that covers archetype slide creation (happy path + missing-template path).",
+      "status": "todo",
+      "assignee": "Jarvis",
+      "order": 4,
+      "createdAt": "2026-02-09T01:01:44.658Z",
+      "updatedAt": "2026-02-09T01:01:44.658Z"
+    },
+    {
+      "id": "0ace969d-3906-474f-8019-bcba840cf84e",
+      "title": "YC: draft application narrative + metrics snapshot",
+      "description": "Deliver: crisp “Why now / why us”, wedge, competition, traction (even if early), and a 6–10 bullet list of proof points. Include open questions to resolve.",
+      "status": "todo",
+      "assignee": "Jarvis",
+      "order": 5,
+      "createdAt": "2026-02-09T01:01:44.658Z",
+      "updatedAt": "2026-02-09T01:01:44.658Z"
+    },
+    {
+      "id": "8dd1ec14-94b0-43fc-94f6-9194e78c7df1",
+      "title": "Repo hygiene: fix local novl-dashboard checkout (wrong remote)",
+      "description": "Local folder /clawd/novl-dashboard currently points at OrazioP26/Jarvis-board. Fix by re-cloning correct Novl dashboard/web repo (or remove/rename folder) to avoid accidental PRs to wrong repo.",
+      "status": "todo",
+      "assignee": "Jarvis",
+      "order": 6,
+      "createdAt": "2026-02-09T01:01:44.658Z",
+      "updatedAt": "2026-02-09T01:01:44.658Z"
     }
   ],
   "deliverables": [
