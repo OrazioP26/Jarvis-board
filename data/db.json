@@ -1,14 +1,28 @@
 {
   "tasks": [
     {
+      "id": "22618B59-4C79-4CE4-88C4-59D64C287E81",
+      "title": "Sprint 2026-02-16 (Mon): Fix novl-api npm audit + deployment hygiene",
+      "description": "#1 objective (today): Eliminate (or intentionally mitigate) the `novl-api` npm audit findings coming from the `vercel` dependency chain, without breaking deploy.\n\nPR-sized tasks:\n1) **Dependency fix (preferred):** remove `vercel` from runtime dependencies (uninstall it entirely if unused; otherwise move it to `devDependencies`) and re-run `npm audit --omit=dev` to confirm the production surface is clean.\n2) **If findings remain:** bump `vercel` to latest compatible version and re-run audit; verify `vercel.json` + deployment still work.\n\nExact test prompts/steps:\n- In `novl-api`:\n  1) `cd novl-api`\n  2) `npm audit --omit=dev` (capture baseline)\n  3) `npm ls vercel` (confirm why it exists)\n  4) If unused: `npm uninstall vercel` (or `npm pkg delete dependencies.vercel`)\n     - If needed for tooling only: `npm uninstall vercel && npm i -D vercel`\n  5) `rm -rf node_modules package-lock.json && npm i` (clean install)\n  6) `npm audit --omit=dev` \u2192 expect 0 findings (or documented residual)\n  7) Run API smoke:\n     - Python: `python -m compileall .` (sanity)\n     - `pytest -q` (if env configured)\n\nBlockers + decisions needed:\n- Decision: is `vercel` actually needed in `novl-api` (runtime) or only for deploy tooling? If only deploy tooling, it should not be in `dependencies`.\n- If Vercel deployment requires `vercel` package: confirm recommended version + whether we accept `--force` upgrades.\n- If residual vulnerabilities remain: decide between (a) upgrade/breaking change, (b) remove feature, (c) document exception + mitigation.\n",
+      "status": "in_progress",
+      "assignee": "Jarvis",
+      "order": 0,
+      "createdAt": "2026-02-16T14:04:00Z",
+      "updatedAt": "2026-02-16T14:04:00Z",
+      "automation": {
+        "enabled": true,
+        "state": "not_started"
+      }
+    },
+    {
       "id": "41028F34-F889-43CF-8907-1BDBEEB617D1",
       "title": "(Security) Fix novl-api npm audit (vercel/esbuild/path-to-regexp/undici/tar)",
-      "description": "2026-02-16 audit: `novl-api` has **11** npm audit findings (3 moderate, 8 high) via `vercel` dependency chain (esbuild <=0.24.2, path-to-regexp 4.0.0-6.2.2, undici <=6.22.0, tar <=7.5.6).\n\nAction:\n- In `novl-api`, run `npm audit fix` (safe) then re-run `npm audit`.\n- If issues remain, evaluate `npm audit fix --force` (will bump `vercel` to 28.18.5 — breaking change).\n- Prefer: bump `vercel` deliberately, update `vercel.json`/deployment, run test suite + deploy.\n\nDeliverable: clean `npm audit` (or documented exception + mitigation).",
-      "status": "todo",
+      "description": "2026-02-16 audit: `novl-api` has **11** npm audit findings (3 moderate, 8 high) via `vercel` dependency chain (esbuild <=0.24.2, path-to-regexp 4.0.0-6.2.2, undici <=6.22.0, tar <=7.5.6).\n\nAction:\n- In `novl-api`, run `npm audit fix` (safe) then re-run `npm audit`.\n- If issues remain, evaluate `npm audit fix --force` (will bump `vercel` to 28.18.5 \u2014 breaking change).\n- Prefer: bump `vercel` deliberately, update `vercel.json`/deployment, run test suite + deploy.\n\nDeliverable: clean `npm audit` (or documented exception + mitigation).",
+      "status": "in_progress",
       "assignee": "Jarvis",
       "order": 0,
       "createdAt": "2026-02-16T14:03:51.116Z",
-      "updatedAt": "2026-02-16T14:03:51.116Z"
+      "updatedAt": "2026-02-16T14:04:00Z"
     },
     {
       "id": "2D6CD428-74A4-4B42-BCF4-AF0F5D085559",
@@ -57,7 +71,7 @@
     {
       "id": "ad3c17ec-ef7e-4eae-a2a8-2b057257777a",
       "title": "Protect Jarvis-board main branch",
-      "description": "Blocked on GitHub UI/admin. Proposed branch protection for `main` (Jarvis-board):\n\nBranch protection rule: `main`\n- Require a pull request before merging (✅)\n  - Required approvals: 1\n  - Dismiss stale approvals when new commits are pushed (✅)\n  - Require review from Code Owners (optional; only if CODEOWNERS exists)\n- Require status checks to pass before merging (✅)\n  - CI (from .github/workflows/ci.yml)\n  - CodeQL (from .github/workflows/codeql.yml)\n- Require conversation resolution before merging (✅)\n- Require signed commits (optional)\n- Require linear history (optional)\n- Do not allow bypassing the above settings (✅)\n- Restrict who can push to matching branches (optional; can leave off for now)\n- Allow force pushes / deletions (❌)\n\nTest after enabling:\n1) Try direct push to main → should be blocked\n2) Open PR from branch → checks run, merge allowed only after green checks + approval.",
+      "description": "Blocked on GitHub UI/admin. Proposed branch protection for `main` (Jarvis-board):\n\nBranch protection rule: `main`\n- Require a pull request before merging (\u2705)\n  - Required approvals: 1\n  - Dismiss stale approvals when new commits are pushed (\u2705)\n  - Require review from Code Owners (optional; only if CODEOWNERS exists)\n- Require status checks to pass before merging (\u2705)\n  - CI (from .github/workflows/ci.yml)\n  - CodeQL (from .github/workflows/codeql.yml)\n- Require conversation resolution before merging (\u2705)\n- Require signed commits (optional)\n- Require linear history (optional)\n- Do not allow bypassing the above settings (\u2705)\n- Restrict who can push to matching branches (optional; can leave off for now)\n- Allow force pushes / deletions (\u274c)\n\nTest after enabling:\n1) Try direct push to main \u2192 should be blocked\n2) Open PR from branch \u2192 checks run, merge allowed only after green checks + approval.",
       "status": "in_progress",
       "assignee": "Jarvis",
       "order": 1,
@@ -67,7 +81,7 @@
     {
       "id": "216e0699-3c95-4801-8aa6-9d4aaa1aabf0",
       "title": "Review Novl-desktop collaborators",
-      "description": "Current collaborators (from gh api 2026-02-04):\n- OrazioP26 — admin\n- anthonytast — push\n- Markus112105 — push\n\nDecision needed:\n1) Should anthonytast and/or Markus112105 retain push access?\n2) If not, should we downgrade to triage/pull or remove entirely?\n\nNext step once confirmed: use GitHub UI or `gh api` to update permissions/remove collaborators.",
+      "description": "Current collaborators (from gh api 2026-02-04):\n- OrazioP26 \u2014 admin\n- anthonytast \u2014 push\n- Markus112105 \u2014 push\n\nDecision needed:\n1) Should anthonytast and/or Markus112105 retain push access?\n2) If not, should we downgrade to triage/pull or remove entirely?\n\nNext step once confirmed: use GitHub UI or `gh api` to update permissions/remove collaborators.",
       "status": "todo",
       "assignee": "Jarvis",
       "order": 0,
@@ -77,7 +91,7 @@
     {
       "id": "e7692b61-8593-4d9c-9837-e8d3e8ac425e",
       "title": "Enable security scanning where possible",
-      "description": "Repo-side scanning already added in-code for Jarvis-board:\n- Dependabot config: `.github/dependabot.yml`\n- CodeQL workflow: `.github/workflows/codeql.yml`\n- CI workflow: `.github/workflows/ci.yml`\n\nBlocked on GitHub UI/admin toggles (Settings → Security):\n1) Enable **Dependabot alerts**\n2) Enable **Dependabot security updates**\n3) Enable **Secret scanning** (and push protection if available)\n4) Ensure **Code scanning alerts** are enabled (CodeQL runs should populate)\n\nTest/verify after enabling:\n- Create a dummy PR that bumps a known-vuln package (or run `npm audit`) → confirm Dependabot alerts show\n- Confirm CodeQL run appears in Actions and code scanning alerts page.",
+      "description": "Repo-side scanning already added in-code for Jarvis-board:\n- Dependabot config: `.github/dependabot.yml`\n- CodeQL workflow: `.github/workflows/codeql.yml`\n- CI workflow: `.github/workflows/ci.yml`\n\nBlocked on GitHub UI/admin toggles (Settings \u2192 Security):\n1) Enable **Dependabot alerts**\n2) Enable **Dependabot security updates**\n3) Enable **Secret scanning** (and push protection if available)\n4) Ensure **Code scanning alerts** are enabled (CodeQL runs should populate)\n\nTest/verify after enabling:\n- Create a dummy PR that bumps a known-vuln package (or run `npm audit`) \u2192 confirm Dependabot alerts show\n- Confirm CodeQL run appears in Actions and code scanning alerts page.",
       "status": "in_progress",
       "assignee": "Jarvis",
       "order": 3,
@@ -185,7 +199,7 @@
     {
       "id": "6VabH555aBVGLNC92P23z",
       "title": "Sprint 2026-02-06 (Fri): GitHub hardening doc + security snapshot",
-      "description": "#1 objective (today): Ship the repo-hardening checklist doc + the gh-based security snapshot script so Orazio can flip all GitHub security + branch protection settings in <5 minutes.\n\nPR-sized tasks (Jarvis):\n1) Finish **docs/repo-hardening.md** in jarvis-board with exact clickpath toggles (Dependabot alerts/updates, secret scanning, code scanning, branch protection).\n2) Implement **scripts/gh-security-snapshot** (bash/node) that prints: branch protection status + required checks + security features enabled + TODO checklist.\n\nExact test prompts/steps:\n- Local doc check: open docs/repo-hardening.md, verify it includes: Settings → Security & analysis toggles + Branches → Branch protection rule fields + which checks to select (CI, CodeQL).\n- Script run (jarvis-board):\n  1) cd jarvis-board\n  2) gh auth status\n  3) ./scripts/gh-security-snapshot.sh OrazioP26/jarvis-board (or node variant)\n  4) Confirm output includes: protection rule exists?; required checks names; dependabot_alerts on/off; secret_scanning on/off; code_scanning on/off.\n- Script run (optional second repo): ./scripts/gh-security-snapshot.sh OrazioP26/novl-api to ensure it handles repos without protection rules gracefully.\n\nBlockers + decisions needed:\n- Needs Orazio GitHub admin clicks for: enabling security toggles + creating branch protection rule (task: “Flip GitHub settings…”).\n- Decision: do we enforce PR-required on main (even for Jarvis-board) once CI+CodeQL are stable? (recommended yes).\n",
+      "description": "#1 objective (today): Ship the repo-hardening checklist doc + the gh-based security snapshot script so Orazio can flip all GitHub security + branch protection settings in <5 minutes.\n\nPR-sized tasks (Jarvis):\n1) Finish **docs/repo-hardening.md** in jarvis-board with exact clickpath toggles (Dependabot alerts/updates, secret scanning, code scanning, branch protection).\n2) Implement **scripts/gh-security-snapshot** (bash/node) that prints: branch protection status + required checks + security features enabled + TODO checklist.\n\nExact test prompts/steps:\n- Local doc check: open docs/repo-hardening.md, verify it includes: Settings \u2192 Security & analysis toggles + Branches \u2192 Branch protection rule fields + which checks to select (CI, CodeQL).\n- Script run (jarvis-board):\n  1) cd jarvis-board\n  2) gh auth status\n  3) ./scripts/gh-security-snapshot.sh OrazioP26/jarvis-board (or node variant)\n  4) Confirm output includes: protection rule exists?; required checks names; dependabot_alerts on/off; secret_scanning on/off; code_scanning on/off.\n- Script run (optional second repo): ./scripts/gh-security-snapshot.sh OrazioP26/novl-api to ensure it handles repos without protection rules gracefully.\n\nBlockers + decisions needed:\n- Needs Orazio GitHub admin clicks for: enabling security toggles + creating branch protection rule (task: \u201cFlip GitHub settings\u2026\u201d).\n- Decision: do we enforce PR-required on main (even for Jarvis-board) once CI+CodeQL are stable? (recommended yes).\n",
       "status": "in_progress",
       "assignee": "Jarvis",
       "order": 4,
@@ -209,7 +223,7 @@
     {
       "id": "3c5c2c5c-fb1d-4081-8629-5a70afaf01cd",
       "title": "Novl-Add-On: end-to-end template-backed slide creation demo",
-      "description": "Goal: from a prompt + selected template/archetype → create slide in PowerPoint with correct layout constants & minimal styling regressions. Include a scripted demo flow + verification steps.",
+      "description": "Goal: from a prompt + selected template/archetype \u2192 create slide in PowerPoint with correct layout constants & minimal styling regressions. Include a scripted demo flow + verification steps.",
       "status": "todo",
       "assignee": "Jarvis",
       "order": 8,
@@ -229,7 +243,7 @@
     {
       "id": "0ace969d-3906-474f-8019-bcba840cf84e",
       "title": "YC: draft application narrative + metrics snapshot",
-      "description": "Deliver: crisp “Why now / why us”, wedge, competition, traction (even if early), and a 6–10 bullet list of proof points. Include open questions to resolve.",
+      "description": "Deliver: crisp \u201cWhy now / why us\u201d, wedge, competition, traction (even if early), and a 6\u201310 bullet list of proof points. Include open questions to resolve.",
       "status": "todo",
       "assignee": "Jarvis",
       "order": 10,
@@ -293,7 +307,7 @@
     {
       "id": "3TyfsmSdnsJTitFWqiQKF",
       "title": "Sprint 2026-02-09 (Mon): Fix agent_loop auth bypass + add regression test",
-      "description": "#1 objective (today): Remove spoofable x-vercel-cron auth bypass for /api/agent_loop/poll and add a regression test so it can’t come back.\n\nPR-sized tasks:\n1) Patch src/lib/agentLoop.ts: require x-jarvis-secret (or equivalent) for poll in all envs; remove x-vercel-cron bypass OR gate it behind shared secret.\n2) Add tests + verification script (curl-based) + update docs/notes for Vercel cron header requirements.\n\nExact test prompts/steps:\n- Local (dev):\n  1) cd jarvis-board && npm run dev\n  2) curl -i http://localhost:3000/api/agent_loop/poll (no headers) => 401/403\n  3) curl -i -H \"x-vercel-cron: 1\" http://localhost:3000/api/agent_loop/poll => still 401/403\n  4) curl -i -H \"x-jarvis-secret: $JARVIS_SECRET\" http://localhost:3000/api/agent_loop/poll => 200\n- Prod sanity (after deploy): repeat 2-4 against https://<vercel-url>/api/agent_loop/poll\n\nBlockers/decisions:\n- Decision: preferred fix option (remove bypass vs disable agent loop on Vercel vs private repo/tokenized path). Recommended: remove bypass + require secret.\n- Need current Vercel cron/scheduler ability to set x-jarvis-secret header; if not possible, switch scheduler or disable agent loop in prod.",
+      "description": "#1 objective (today): Remove spoofable x-vercel-cron auth bypass for /api/agent_loop/poll and add a regression test so it can\u2019t come back.\n\nPR-sized tasks:\n1) Patch src/lib/agentLoop.ts: require x-jarvis-secret (or equivalent) for poll in all envs; remove x-vercel-cron bypass OR gate it behind shared secret.\n2) Add tests + verification script (curl-based) + update docs/notes for Vercel cron header requirements.\n\nExact test prompts/steps:\n- Local (dev):\n  1) cd jarvis-board && npm run dev\n  2) curl -i http://localhost:3000/api/agent_loop/poll (no headers) => 401/403\n  3) curl -i -H \"x-vercel-cron: 1\" http://localhost:3000/api/agent_loop/poll => still 401/403\n  4) curl -i -H \"x-jarvis-secret: $JARVIS_SECRET\" http://localhost:3000/api/agent_loop/poll => 200\n- Prod sanity (after deploy): repeat 2-4 against https://<vercel-url>/api/agent_loop/poll\n\nBlockers/decisions:\n- Decision: preferred fix option (remove bypass vs disable agent loop on Vercel vs private repo/tokenized path). Recommended: remove bypass + require secret.\n- Need current Vercel cron/scheduler ability to set x-jarvis-secret header; if not possible, switch scheduler or disable agent loop in prod.",
       "status": "in_progress",
       "assignee": "Jarvis",
       "order": 5,
@@ -307,7 +321,7 @@
     {
       "id": "cddf88eb-e5a8-4a5a-bc30-dad2092a1a8b",
       "title": "Sprint 2026-02-10 (Tue): Secure agent_loop poll + verify cron",
-      "description": "#1 objective (today): **Eliminate the auth bypass** on `/api/agent_loop/poll` (no more trusting `x-vercel-cron`) and ship a regression test + verification script so it stays locked down.\n\nPR-sized tasks:\n1) **Code patch (auth)**: update `webhookSecretOk` to *require* `x-jarvis-secret` (or `?secret=`) in **all** environments where `JARVIS_BOARD_WEBHOOK_SECRET` is set; remove/disable the `x-vercel-cron: 1` allowlist (or gate it behind the same shared secret).\n2) **Tests + deploy verification**: add an automated test (or minimal integration test script) that asserts:\n   - no header → 401/403\n   - `x-vercel-cron: 1` only → 401/403\n   - correct `x-jarvis-secret` → 200\n   Then verify in prod after deploy.\n\nExact test prompts/steps:\n- Local dev:\n  1) `cd jarvis-board && npm i` (if needed)\n  2) `export JARVIS_BOARD_WEBHOOK_SECRET=devsecret`\n  3) `npm run dev`\n  4) `curl -i http://localhost:3000/api/agent_loop/poll` → expect **401/403**\n  5) `curl -i -H \"x-vercel-cron: 1\" http://localhost:3000/api/agent_loop/poll` → expect **401/403**\n  6) `curl -i -H \"x-jarvis-secret: devsecret\" http://localhost:3000/api/agent_loop/poll` → expect **200**\n- Add a reusable script:\n  - `./scripts/verify-agent-loop-auth.sh <baseUrl>` that runs the 3 curls above and exits non-zero on failure.\n- Prod (after deploy):\n  - Run the same script against `https://<vercel-url>`; confirm it blocks cron-spoofing.\n\nBlockers + decisions needed:\n- **Decision:** how will Vercel Cron supply the shared secret?\n  - If Vercel Cron can’t set custom headers: use `?secret=...` on the cron URL, or switch scheduler, or disable the agent loop endpoint in prod.\n- **Need:** confirm where `JARVIS_BOARD_WEBHOOK_SECRET` will live (Vercel env var) and rotation plan.",
+      "description": "#1 objective (today): **Eliminate the auth bypass** on `/api/agent_loop/poll` (no more trusting `x-vercel-cron`) and ship a regression test + verification script so it stays locked down.\n\nPR-sized tasks:\n1) **Code patch (auth)**: update `webhookSecretOk` to *require* `x-jarvis-secret` (or `?secret=`) in **all** environments where `JARVIS_BOARD_WEBHOOK_SECRET` is set; remove/disable the `x-vercel-cron: 1` allowlist (or gate it behind the same shared secret).\n2) **Tests + deploy verification**: add an automated test (or minimal integration test script) that asserts:\n   - no header \u2192 401/403\n   - `x-vercel-cron: 1` only \u2192 401/403\n   - correct `x-jarvis-secret` \u2192 200\n   Then verify in prod after deploy.\n\nExact test prompts/steps:\n- Local dev:\n  1) `cd jarvis-board && npm i` (if needed)\n  2) `export JARVIS_BOARD_WEBHOOK_SECRET=devsecret`\n  3) `npm run dev`\n  4) `curl -i http://localhost:3000/api/agent_loop/poll` \u2192 expect **401/403**\n  5) `curl -i -H \"x-vercel-cron: 1\" http://localhost:3000/api/agent_loop/poll` \u2192 expect **401/403**\n  6) `curl -i -H \"x-jarvis-secret: devsecret\" http://localhost:3000/api/agent_loop/poll` \u2192 expect **200**\n- Add a reusable script:\n  - `./scripts/verify-agent-loop-auth.sh <baseUrl>` that runs the 3 curls above and exits non-zero on failure.\n- Prod (after deploy):\n  - Run the same script against `https://<vercel-url>`; confirm it blocks cron-spoofing.\n\nBlockers + decisions needed:\n- **Decision:** how will Vercel Cron supply the shared secret?\n  - If Vercel Cron can\u2019t set custom headers: use `?secret=...` on the cron URL, or switch scheduler, or disable the agent loop endpoint in prod.\n- **Need:** confirm where `JARVIS_BOARD_WEBHOOK_SECRET` will live (Vercel env var) and rotation plan.",
       "status": "in_progress",
       "assignee": "Jarvis",
       "order": 6,
@@ -321,7 +335,7 @@
     {
       "id": "acf6b9be-954b-472b-8b8b-832f411c5bb7",
       "title": "Sprint 2026-02-11 (Wed): Lock down agent_loop poll auth + verification",
-      "description": "#1 objective (today): Eliminate the spoofable auth path for `/api/agent_loop/poll` and ship a repeatable verification step so it stays locked down.\n\nPR-sized tasks:\n1) **Auth patch**: remove any trust of `x-vercel-cron: 1` alone; require shared secret (`x-jarvis-secret` or `?secret=`) whenever `JARVIS_BOARD_WEBHOOK_SECRET` is set.\n2) **Regression verification**: add `scripts/verify-agent-loop-auth.sh` (or test) that asserts: no headers => 401/403; `x-vercel-cron: 1` only => 401/403; correct secret => 200.\n\nExact test prompts/steps:\n- Local:\n  1) `cd jarvis-board`\n  2) `export JARVIS_BOARD_WEBHOOK_SECRET=devsecret`\n  3) `npm run dev`\n  4) `curl -i http://localhost:3000/api/agent_loop/poll` → 401/403\n  5) `curl -i -H \"x-vercel-cron: 1\" http://localhost:3000/api/agent_loop/poll` → 401/403\n  6) `curl -i -H \"x-jarvis-secret: devsecret\" http://localhost:3000/api/agent_loop/poll` → 200\n  7) `./scripts/verify-agent-loop-auth.sh http://localhost:3000 devsecret` → exit 0\n- Prod (after deploy): run the same script against the Vercel URL.\n\nBlockers + decisions needed:\n- **Decision:** How will the scheduler/cron provide the shared secret in prod? If Vercel Cron cannot set headers, use a `?secret=` query param or disable the endpoint in prod.\n- Need confirmation of the canonical secret name + rotation plan.",
+      "description": "#1 objective (today): Eliminate the spoofable auth path for `/api/agent_loop/poll` and ship a repeatable verification step so it stays locked down.\n\nPR-sized tasks:\n1) **Auth patch**: remove any trust of `x-vercel-cron: 1` alone; require shared secret (`x-jarvis-secret` or `?secret=`) whenever `JARVIS_BOARD_WEBHOOK_SECRET` is set.\n2) **Regression verification**: add `scripts/verify-agent-loop-auth.sh` (or test) that asserts: no headers => 401/403; `x-vercel-cron: 1` only => 401/403; correct secret => 200.\n\nExact test prompts/steps:\n- Local:\n  1) `cd jarvis-board`\n  2) `export JARVIS_BOARD_WEBHOOK_SECRET=devsecret`\n  3) `npm run dev`\n  4) `curl -i http://localhost:3000/api/agent_loop/poll` \u2192 401/403\n  5) `curl -i -H \"x-vercel-cron: 1\" http://localhost:3000/api/agent_loop/poll` \u2192 401/403\n  6) `curl -i -H \"x-jarvis-secret: devsecret\" http://localhost:3000/api/agent_loop/poll` \u2192 200\n  7) `./scripts/verify-agent-loop-auth.sh http://localhost:3000 devsecret` \u2192 exit 0\n- Prod (after deploy): run the same script against the Vercel URL.\n\nBlockers + decisions needed:\n- **Decision:** How will the scheduler/cron provide the shared secret in prod? If Vercel Cron cannot set headers, use a `?secret=` query param or disable the endpoint in prod.\n- Need confirmation of the canonical secret name + rotation plan.",
       "status": "in_progress",
       "assignee": "Jarvis",
       "order": 1,
@@ -438,7 +452,7 @@
     },
     {
       "id": "doc-claude-code-tips-2026-02-05",
-      "name": "Claude Code tips (Boris Cherny) — Feb 2026",
+      "name": "Claude Code tips (Boris Cherny) \u2014 Feb 2026",
       "link": "https://docs.google.com/document/d/1Leztpk1NTkz2-NiqO_jvxmMbKc50Ri0ZuBDJZ7uPBpQ/edit?usp=drivesdk",
       "notes": "Key tips: parallel worktrees, plan mode, invest in CLAUDE.md, subagents/skills",
       "createdAt": "2026-02-05T14:39:00.000Z",
@@ -446,7 +460,7 @@
     },
     {
       "id": "doc-openclaw-costs-97-2026-02-05",
-      "name": "Cut OpenClaw costs by 97% — notes (Feb 2026)",
+      "name": "Cut OpenClaw costs by 97% \u2014 notes (Feb 2026)",
       "link": "https://docs.google.com/document/d/1nyngl29RHb5v-FKA-DMWF4YaV1gkzCnEGI7jseV9orU/edit?usp=drivesdk",
       "notes": "Cost control ideas: model tiering (cheap heartbeats + cheaper subagents) + fallback chains",
       "createdAt": "2026-02-05T14:39:00.000Z",
@@ -462,6 +476,13 @@
     }
   ],
   "activity": [
+    {
+      "id": "sprint-2026-02-16-created",
+      "kind": "task.created",
+      "message": "Created task: Sprint 2026-02-16 (Mon): Fix novl-api npm audit + deployment hygiene",
+      "createdAt": "2026-02-16T14:04:00Z",
+      "source": "jarvis"
+    },
     {
       "id": "sprint-2026-02-13-created",
       "kind": "task.created",
@@ -656,6 +677,6 @@
       "createdAt": "2026-02-09T14:04:23.156Z"
     }
   ],
-  "lastActivityAt": "2026-02-13T14:00:00.000Z",
+  "lastActivityAt": "2026-02-16T14:04:00Z",
   "lastActivityNote": "Sprint Start Plan created"
 }
