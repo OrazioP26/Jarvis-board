@@ -28,3 +28,17 @@ Report: `data/security-audit-2026-02-09.md`
 
 ## 2026-02-10 09:00 ET
 - Sprint plan: secure `/api/agent_loop/poll` (remove `x-vercel-cron` trust), add regression test + verification script, and verify in prod after deploy.
+
+## 2026-02-16 — Weekly Security Audit
+- GitHub:
+  - Jarvis-board: `main` branch **not protected** (still).
+  - Novl-API: branch protection **not enabled / unavailable** (API returns 403 for private repo protection on current plan); **no Actions/CI** detected.
+  - Novl-API: collaborators list is broad; needs least-privilege review.
+- Dependencies:
+  - jarvis-board: `npm audit` clean.
+  - novl-api: `npm audit` shows **11** vulns (3 moderate, 8 high) via `vercel` chain (esbuild/path-to-regexp/undici/tar).
+- Clawdbot:
+  - Gateway bound to **127.0.0.1** (loopback-only) + probe ok (good).
+- Vercel: not audited (no authenticated access).
+
+Report: `data/security-audit-2026-02-16.md`
