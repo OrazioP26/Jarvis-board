@@ -42,3 +42,16 @@ Report: `data/security-audit-2026-02-09.md`
 - Vercel: not audited (no authenticated access).
 
 Report: `data/security-audit-2026-02-16.md`
+
+## 2026-02-23 — Weekly Security Audit
+- GitHub:
+  - Jarvis-board: `main` branch **not protected** (still).
+  - Novl-API: branch protection **unavailable** on current plan; **no Actions/CI** detected; collaborator set remains broad.
+- Dependencies:
+  - jarvis-board: `npm audit` clean.
+  - novl-api: `npm audit` now shows **22** vulns (**19 high**) via `vercel` chain.
+- Clawdbot:
+  - Gateway bound to loopback + token auth (good); config file permissions `0600`.
+- Vercel: not audited (no authenticated access).
+
+Report: `data/security-audit-2026-02-23.md`
