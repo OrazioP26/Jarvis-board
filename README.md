@@ -21,10 +21,18 @@ Data is stored at:
 
 - `data/db.json`
 
+Generated documents (created by Jarvis/Claude Code) are stored at:
+
+- `data/documents/` (default)
+
+You can override the directory with:
+
+- `JARVIS_BOARD_DOCS_DIR=./some/other/folder`
+
 ## Local dev
 
 ```bash
-cd novl-dashboard
+cd jarvis-board
 npm install
 npm run dev
 ```
@@ -44,6 +52,10 @@ Open:
 - `POST /api/deliverables`
 - `PATCH /api/deliverables/:id`
 - `DELETE /api/deliverables/:id`
+
+- `GET /api/documents` (list stored docs)
+- `POST /api/documents` (create a doc: {title, content, ext})
+- `POST /api/documents/read` (read a doc by relative path: {path})
 
 ## Notes / next steps
 
