@@ -29,6 +29,18 @@ You can override the directory with:
 
 - `JARVIS_BOARD_DOCS_DIR=./some/other/folder`
 
+## Drive uploads (PDF)
+
+If you want jarvis-board to generate a PDF and upload it to Google Drive, enable the local `gog` integration:
+
+- `JARVIS_BOARD_ENABLE_GOG_DRIVE=1`
+
+Optional:
+- `JARVIS_DRIVE_FOLDER_ID=<folderId>` (otherwise jarvis-board will create a folder named **Jarvis Documents**)
+
+Notes:
+- This is intended for **local/self-hosted** use (the server needs access to your local `gog` auth).
+
 ## Local dev
 
 ```bash
@@ -56,6 +68,7 @@ Open:
 - `GET /api/documents` (list stored docs)
 - `POST /api/documents` (create a doc: {title, content, ext})
 - `POST /api/documents/read` (read a doc by relative path: {path})
+- `POST /api/documents/pdf-drive` (generate PDF + upload to Drive: {title, content})
 
 ## Notes / next steps
 
