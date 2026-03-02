@@ -1,6 +1,20 @@
 {
   "tasks": [
     {
+      "id": "73b982bf-5521-4051-9d2a-957b2958c69a",
+      "title": "Sprint 2026-03-02 (Mon): Make Novl-API slide analyzer refactor green + lock contract tests",
+      "description": "#1 objective (today): Get the Novl-API slide analyzer refactor back to a merge-ready state (pytest green) and lock behavior with focused contract tests so we stop regressing.\n\nPR-sized tasks:\n1) **Green tests on refactor**: reproduce current failures, patch analyzer/geometry code until `pytest -q` is green, and validate the `/analyze_design` response schema is stable.\n2) **Contract test suite**: add small, targeted tests (geometry helpers + analyzer edge cases) that assert the public contract without huge fixtures; run in CI locally if present.\n\nExact test prompts/steps:\n- Setup:\n  1) `cd novl-api`\n  2) `python -m compileall .`\n  3) `pytest -q` (capture failure list)\n- Focused reruns:\n  - `pytest -q -k \"slide_analyzer or geometry\"`\n  - `pytest -q tests/test_slide_analyzer.py::test_<failing_case>`\n- Add/restore contract tests:\n  1) Create/extend `tests/test_geometry.py` (overlap/containment/union/tolerance)\n  2) Add 5–10 analyzer tests: empty slide, missing elements, mixed element types, edge bboxes, invalid bbox\n  3) Re-run `pytest -q`\n- Manual API sanity (if easy):\n  - Start server and POST a minimal payload to `/analyze_design`; confirm JSON shape + no 500s.\n\nBlockers + decisions needed:\n- Confirm bbox convention (x,y,w,h vs x1,y1,x2,y2) + what analyzer should accept/emit.\n- Decide float tolerance for geometry outputs (exact vs `pytest.approx`).\n- If response schema changed intentionally, decide: update tests vs preserve old contract.\n",
+      "status": "in_progress",
+      "assignee": "Jarvis",
+      "order": 0,
+      "createdAt": "2026-03-02T14:04:00.000Z",
+      "updatedAt": "2026-03-02T14:04:00.000Z",
+      "automation": {
+        "enabled": true,
+        "state": "not_started"
+      }
+    },
+    {
       "id": "7435e813-3df5-4a6f-982c-1c3d543d045f",
       "title": "(Security) Novl-API: address ecdsa CVE-2024-23342 exposure",
       "description": "2026-03-02 audit: pip-audit flags `ecdsa` (CVE-2024-23342, timing side-channel). No upstream fix planned.\n\nAction:\n- Identify whether Novl-API performs ECDSA signing (ES256/ES384/ES512) in prod.\n- Prefer HS256 (HMAC) JWTs or switch signing implementation to `cryptography` where applicable.\n- If only used transitively and not for signing, document rationale + ensure it can't be reached.\n\nDeliverable: either (a) mitigation implemented, or (b) documented exception + why it’s not exploitable in our deployment.",
