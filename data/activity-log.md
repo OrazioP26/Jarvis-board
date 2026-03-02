@@ -55,3 +55,19 @@ Report: `data/security-audit-2026-02-16.md`
 - Vercel: not audited (no authenticated access).
 
 Report: `data/security-audit-2026-02-23.md`
+
+## 2026-03-02 — Weekly Security Audit
+- GitHub:
+  - Jarvis-board: `main` branch **not protected**; Dependabot security updates **disabled**; secret scanning + push protection **enabled**.
+  - Novl-API: branch protection **unavailable** on current plan; **no Actions/CI** detected; collaborator push surface remains broad (8 accounts).
+- Dependencies:
+  - jarvis-board: `npm audit --omit=dev` clean; `npm audit` shows **1 high** (dev toolchain: `minimatch`).
+  - novl-api: `npm audit --omit=dev` shows **16** vulns (**9 high**) via `vercel` chain.
+  - novl-api (python): `pip-audit` flags **ecdsa CVE-2024-23342** (no fix planned).
+- Repo hygiene:
+  - novl-api: found hardcoded JWT secret `SECRET_KEY = "my-secret-key"` in `routers/users.py`.
+- Clawdbot:
+  - Gateway bound to loopback + token auth (good). Security audit warns about trusted proxies (fine if local-only) and image model tier.
+- Vercel: not audited (no authenticated access).
+
+Report: `data/security-audit-2026-03-02.md`
