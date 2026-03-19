@@ -71,3 +71,36 @@ Report: `data/security-audit-2026-02-23.md`
 - Vercel: not audited (no authenticated access).
 
 Report: `data/security-audit-2026-03-02.md`
+
+## 2026-03-09 — Weekly Security Audit
+- GitHub:
+  - Jarvis-board: `main` branch **not protected**; Dependabot security updates **disabled**; secret scanning + push protection **enabled**; 0 open secret-scanning alerts. Recent Dependabot PR CI failure observed.
+  - Novl-API: branch protection **unavailable** on current plan; **secret scanning disabled**; **no Actions/CI**; collaborator push surface remains broad (8 accounts).
+- Dependencies:
+  - jarvis-board: `npm audit --omit=dev` clean; `npm audit` shows **1 high** (`minimatch`, dev toolchain).
+  - novl-api: `npm audit --omit=dev` shows **16** vulns (**9 high**) via `vercel` chain.
+  - novl-api (python): `pip-audit` flags **ecdsa CVE-2024-23342** (no fix planned).
+- Repo hygiene:
+  - novl-api: hardcoded JWT secret still present: `SECRET_KEY = "my-secret-key"` in `routers/users.py`.
+- Clawdbot/OpenClaw:
+  - Gateway bound to loopback + token auth (good). Security audit warns about trusted proxies (fine if local-only) and image model tier.
+- Vercel: not audited (no authenticated access/tooling).
+
+Report: `data/security-audit-2026-03-09.md`
+
+## 2026-03-13 09:00 ET
+- Sprint plan: finish Novl-API secret detection (gitleaks CI + optional GitHub Secret Scanning), verify it fails on a dummy secret, document response process, and get it merged.
+
+## 2026-03-16 — Weekly Security Audit
+- GitHub:
+  - Jarvis-board: `main` branch **not protected**; Dependabot security updates **disabled**; secret scanning + push protection **enabled**; 0 open secret-scanning alerts.
+- Dependencies:
+  - jarvis-board: `npm audit --omit=dev` clean; `npm audit` shows **2 HIGH** (dev toolchain: `minimatch`, `flatted`).
+  - novl-dashboard: `npm audit --omit=dev` clean.
+  - novl-api (python): **not audited** this week (pip-audit tooling not available on host).
+- App security (Jarvis-board/Vercel cron): **HIGH** — `/api/agent_loop/poll` still trusts `x-vercel-cron: 1` in prod (spoofable).
+- Clawdbot/OpenClaw:
+  - Gateway bound to loopback + token auth (good).
+- Vercel: not audited (no authenticated access/tooling).
+
+Report: `data/security-audit-2026-03-16.md`
